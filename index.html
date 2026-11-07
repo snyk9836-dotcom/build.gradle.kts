@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مختبر الكوماند بلوك</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f1ea;--sf:#fff;--tx:#1b1d22;--mu:#5d6068;--bd:#d9d5c8;--i:#d9822b;--c:#3f9a62;--r:#7a55c9;--code:#14161b;--ct:#e8e8e8;color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171c;--sf:#1f2229;--tx:#ececec;--mu:#9a9ea8;--bd:#33373f;--code:#0c0d10;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15171c;--sf:#1f2229;--tx:#ececec;--mu:#9a9ea8;--bd:#33373f;--code:#0c0d10;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.7 Cairo,system-ui,sans-serif;max-width:760px;margin-inline:auto;padding:16px}
+h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.15rem;margin:1.2em 0 .4em}
+p{margin:.3em 0;color:var(--mu)}
+nav{display:flex;gap:8px;margin:14px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:6px 0;z-index:5}
+nav button{flex:1;padding:10px 4px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;border-radius:8px}
+nav button.on{border-color:var(--tx);font-weight:700}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}
+label{display:block;margin:10px 0 2px;font-size:.9rem}
+select,input{width:100%;padding:10px;font:inherit;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}
+.blk{display:flex;align-items:center;gap:12px}
+.cube{width:54px;height:54px;flex:none;border:3px solid rgba(0,0,0,.35);display:grid;place-items:center;font-size:24px;color:#fff;image-rendering:pixelated;box-shadow:inset 0 0 0 6px rgba(255,255,255,.18)}
+.i{background:var(--i)}.c{background:var(--c)}.r{background:var(--r)}
+.row{display:flex;gap:10px;align-items:stretch;margin:8px 0}
+.row .cube{width:40px;height:auto;min-height:40px;font-size:16px}
+.row pre{flex:1;margin:0;padding:10px;background:var(--code);color:var(--ct);border-radius:6px;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left;font:13px/1.5 ui-monospace,Menlo,monospace}
+.row small{display:block;color:var(--mu);direction:rtl;font-size:.78rem;margin-bottom:2px}
+.cta{width:100%;padding:12px;border:0;border-radius:8px;background:var(--tx);color:var(--bg);font:inherit;font-weight:700;margin-top:10px}
+.hide{display:none}
+details{border-bottom:1px solid var(--bd);padding:8px 0}summary{font-weight:700;cursor:pointer}
+.mode{display:flex;gap:6px;margin:8px 0}
+.mode button{flex:1;padding:8px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;font-size:.85rem;border-radius:8px}
+.mode button.on{border-color:var(--tx);font-weight:700}
+.lr{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:6px 0;cursor:pointer}
+.lr small{display:block;color:var(--mu);font-size:.78rem;line-height:1.5}
+.lr pre{margin:2px 0 0;padding:8px;background:var(--code);color:var(--ct);border-radius:6px;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left;font:12.5px/1.5 ui-monospace,Menlo,monospace}
+.lbar{display:grid;grid-template-columns:1fr;gap:8px}
+#lcount{color:var(--mu);font-size:.85rem;margin:8px 0 0}
+.more{width:100%;padding:10px;margin:8px 0;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;border-radius:8px}
+/* الدائرة العايمة */
+#fab{position:fixed;left:0;top:0;width:56px;height:56px;padding:0;border-radius:50%;border:3px solid var(--bg);background:var(--i);color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.35);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;z-index:70}
+#pnl{position:fixed;z-index:60;background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);flex-direction:column;overflow:hidden}
+#pnl:not(.hide){display:flex}
+#pnl .ph{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 0}
+#pnl .ph button{border:0;background:none;color:var(--tx);font-size:20px;padding:4px 8px}
+#pnl .pt{padding:0 12px}
+#pnl .pt input{padding:8px;font-size:.9rem}
+#pb{overflow:auto;padding:8px 12px 12px;flex:1;min-height:60px}
+.pi{display:flex;justify-content:space-between;width:100%;padding:9px 10px;margin:4px 0;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-size:.9rem;border-radius:8px;text-align:start}
+.pi span{color:var(--mu);font-size:.8rem}
+.ph2{margin:8px 0 2px;font-weight:700;font-size:.85rem;color:var(--mu)}
+.bk{display:flex;gap:6px;margin-bottom:6px}
+.bk button{flex:1;padding:8px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;font-size:.85rem;border-radius:8px}
+.bk .go{background:var(--tx);color:var(--bg);border-color:var(--tx);font-weight:700}
+</style></head><body>
+<h1>مختبر الكوماند بلوك</h1>
+<p>اختار نوع السكريبت، عدّل الخيارات، وخذ الأوامر جاهزة. اضغط على أي سطر لنسخه.</p>
+<div class="mode" aria-label="وضع النسخ"><button data-m="cb">نسخ للكوماند بلوك</button><button data-m="chat">نسخ للشات (يضيف /)</button></div>
+<nav><button data-t="gen" class="on">المولّد</button><button data-t="lib">المكتبة</button><button data-t="blocks">البلوكات</button><button data-t="learn">دروس</button></nav>
+
+<section id="gen">
+<div class="card"><label for="cat">نوع السكريبت</label><select id="cat"></select><div id="fields"></div></div>
+<div id="out"></div><button class="cta" id="copyAll">نسخ كل الأوامر</button>
+</section>
+
+<section id="lib" class="hide">
+<div class="card lbar">
+<input id="lq" type="search" placeholder="ابحث: ألماس، zombie، tp، effect...">
+<select id="lcat" aria-label="القسم"></select>
+</div>
+<p id="lcount"></p>
+<div id="llist"></div>
+<button class="more hide" id="lmore">عرض المزيد</button>
+</section>
+
+<section id="blocks" class="hide">
+<div class="card"><div class="blk"><div class="cube i">▶</div><div><b>Impulse (برتقالي)</b><p>ينفذ مرة وحدة. لازم زر أو ليفر (Needs Redstone). يستخدم كزر تشغيل.</p></div></div></div>
+<div class="card"><div class="blk"><div class="cube c">▶</div><div><b>Chain (أخضر)</b><p>ينفذ بعد البلوك اللي قبله وباتجاه السهم. يستخدم Always Active.</p></div></div></div>
+<div class="card"><div class="blk"><div class="cube r">▶</div><div><b>Repeating (بنفسجي)</b><p>ينفذ كل تك، يعني 20 مرة بالثانية. للعدّادات والمراقبة.</p></div></div></div>
+<h2>Conditional وUnconditional</h2><p>Conditional: ينفذ فقط إذا البلوك اللي قبله نجح. Unconditional: دائماً.</p>
+<h2>Needs Redstone وAlways Active</h2><p>الأول يحتاج ريدستون، والثاني يشتغل لحاله.</p>
+<h2>مثال ترتيب</h2><div class="card">
+<div class="row"><div class="cube i">1</div><pre>give @p diamond 1</pre></div>
+<div class="row"><div class="cube c">2</div><pre>effect @p speed 30 1 true</pre></div>
+<div class="row"><div class="cube c">3</div><pre>title @p actionbar §aDone</pre></div>
+<p>حط البلوكات بخط مستقيم والسهم يشير لنفس الاتجاه.</p></div>
+</section>
+
+<section id="learn" class="hide"></section>
+
+<button id="fab" aria-label="قائمة السكريبتات" title="اسحبها وين ما تريد، واضغط عليها لفتح القائمة">⚡</button>
+<div id="pnl" class="hide" role="dialog" aria-label="قائمة السكريبتات السريعة">
+<div class="ph"><b>السكريبتات السريعة</b><button id="px" aria-label="إغلاق">✕</button></div>
+<div class="pt"><div class="mode"><button data-m="cb">كوماند بلوك</button><button data-m="chat">شات /</button></div><input id="pq" type="search" placeholder="ابحث عن أمر..."></div>
+<div id="pb"></div>
+</div>
+
+<!-- بيانات مكتبة الأوامر (ماينكرافت بيدروك) -->
+<script id="libdata">
+const LIB=[];const _seen=new Set();
+const add=(c,l,m)=>{if(_seen.has(m))return;_seen.add(m);LIB.push({c,l,m})};
+const P=s=>s.split(",").map(x=>x.split(":"));
+
+/* عناصر */
+const RES=P("diamond:ألماس,netherite_ingot:سبيكة نذرايت,emerald:زمرد,gold_ingot:سبيكة ذهب,iron_ingot:سبيكة حديد,copper_ingot:سبيكة نحاس,coal:فحم,redstone:ريدستون,lapis_lazuli:لازورد,quartz:كوارتز,golden_apple:تفاحة ذهبية,enchanted_golden_apple:تفاحة ذهبية مسحورة,cooked_beef:ستيك,bread:خبز,golden_carrot:جزرة ذهبية,ender_pearl:لؤلؤة إندر,eye_of_ender:عين إندر,arrow:سهم,spectral_arrow:سهم طيفي,tnt:تي ان تي,experience_bottle:زجاجة خبرة,blaze_rod:قضيب بليز,ender_chest:صندوق إندر,obsidian:أوبسيديان,glowstone:جلوستون,sea_lantern:فانوس بحري,slime_block:بلوك سلايم,honey_block:بلوك عسل,piston:بستون,sticky_piston:بستون لزج,observer:مراقب,hopper:قِمع,dispenser:موزّع,dropper:مُسقِط,lever:ليفر,stone_button:زر,redstone_torch:شعلة ريدستون,repeater:مكرّر,comparator:مقارن,rail:سكة,powered_rail:سكة مشغّلة,minecart:عربة,oak_boat:قارب,firework_rocket:صاروخ ألعاب,water_bucket:سطل ماء,lava_bucket:سطل حمم,flint_and_steel:قداحة,cobblestone:حجر مكسّر,oak_log:جذع بلوط,glass:زجاج,crafting_table:طاولة صناعة,furnace:فرن,chest:صندوق,bed:سرير");
+RES.forEach(([id,ar])=>add("عناصر","أعطني "+ar,"give @p "+id+" 64"));
+const TOOLS=P("diamond_sword:سيف ألماس,netherite_sword:سيف نذرايت,diamond_pickaxe:معول ألماس,netherite_pickaxe:معول نذرايت,diamond_axe:فأس ألماس,netherite_axe:فأس نذرايت,diamond_shovel:مجرفة ألماس,diamond_hoe:مجرفة زراعة ألماس,bow:قوس,crossbow:كروس بو,trident:ترايدنت,shield:درع يد,elytra:إليترا,totem_of_undying:طوطم الخلود,fishing_rod:صنارة,shears:مقص,compass:بوصلة,clock:ساعة,spyglass:منظار,saddle:سرج,name_tag:بطاقة اسم,lead:حبل,nether_star:نجمة نذر,dragon_egg:بيضة التنين,beacon:منارة,heart_of_the_sea:قلب البحر,turtle_helmet:خوذة السلحفاة,command_block:كوماند بلوك,repeating_command_block:كوماند بلوك متكرر,chain_command_block:كوماند بلوك سلسلة,structure_block:بلوك الهيكل,barrier:حاجز,light_block:بلوك ضوء,border_block:بلوك حدود,allow:بلوك سماح,deny:بلوك منع");
+TOOLS.forEach(([id,ar])=>add("عناصر","أعطني "+ar,"give @p "+id+" 1"));
+
+/* تأثيرات */
+const EFF=P("speed:سرعة,slowness:بطء,haste:استعجال,mining_fatigue:تعب التعدين,strength:قوة,instant_health:شفاء فوري,instant_damage:ضرر فوري,jump_boost:قفز عالي,nausea:غثيان,regeneration:تجدد,resistance:مقاومة,fire_resistance:مقاومة النار,water_breathing:تنفس تحت الماء,invisibility:اختفاء,blindness:عمى,night_vision:رؤية ليلية,hunger:جوع,weakness:ضعف,poison:سم,wither:ويذر,health_boost:صحة إضافية,absorption:امتصاص,saturation:شبع,levitation:طفو,fatal_poison:سم قاتل,slow_falling:سقوط بطيء,conduit_power:قوة الكوندويت,bad_omen:نذير شؤم,village_hero:بطل القرية,darkness:ظلام");
+EFF.forEach(([id,ar])=>{add("تأثيرات",ar+" لي (60 ثانية)","effect @p "+id+" 60 1 true");add("تأثيرات",ar+" للكل (5 دقائق، قوي)","effect @a "+id+" 300 2 true")});
+add("تأثيرات","مسح كل التأثيرات عني","effect @p clear");add("تأثيرات","مسح تأثيرات الكل","effect @a clear");
+
+/* وحوش */
+const MOB=P("zombie:زومبي,skeleton:هيكل عظمي,creeper:كريبر,spider:عنكبوت,cave_spider:عنكبوت الكهف,enderman:إندرمان,witch:ساحرة,pillager:بيلاجر,vindicator:فيندكيتر,evocation_illager:إيفوكر,ravager:رافجر,iron_golem:جولم حديد,snow_golem:رجل ثلج,wolf:ذئب,cat:قطة,ocelot:أوسلوت,blaze:بليز,ghast:غاست,magma_cube:مكعب حمم,slime:سلايم,husk:هاسك,stray:ستراي,drowned:غريق,piglin:بيجلن,piglin_brute:بيجلن شرس,hoglin:هوجلن,zoglin:زوجلن,wither_skeleton:هيكل ويذر,wither:ويذر,ender_dragon:تنين الإندر,shulker:شولكر,endermite:إندرمايت,silverfish:سمكة فضية,phantom:فانتوم,vex:فكس,guardian:جارديان,elder_guardian:جارديان قديم,warden:واردن,allay:آلاي,bat:خفاش,bee:نحلة,cow:بقرة,pig:خنزير,sheep:خروف,chicken:دجاجة,horse:حصان,donkey:حمار,mule:بغل,llama:لاما,fox:ثعلب,panda:باندا,polar_bear:دب قطبي,parrot:ببغاء,rabbit:أرنب,turtle:سلحفاة,dolphin:دلفين,squid:حبّار,glow_squid:حبّار مضيء,axolotl:أكسولوتل,goat:ماعز,frog:ضفدع,camel:جمل,sniffer:سنيفر,villager:قروي,wandering_trader:تاجر متجول,zombie_villager:قروي زومبي,strider:ستريدر,cod:سمك قد,salmon:سلمون,pufferfish:سمكة منفوخة,mooshroom:بقرة فطر,ender_crystal:كريستال إندر,lightning_bolt:صاعقة,fireworks_rocket:صاروخ ألعاب,xp_orb:كرة خبرة");
+MOB.forEach(([id,ar])=>add("وحوش","استدعاء "+ar,"summon "+id+" ~ ~ ~"));
+[["zombie","زومبي","Boss"],["skeleton","هيكل","Archer"],["wither_skeleton","هيكل ويذر","Dark Knight"],["iron_golem","جولم","Guardian"],["pillager","بيلاجر","Raider"],["husk","هاسك","Desert King"],["piglin_brute","بيجلن","Gold Lord"],["ravager","رافجر","Beast"]].forEach(([id,ar,nm])=>add("وحوش","استدعاء "+ar+" باسم \""+nm+"\" أمامك","summon "+id+" \""+nm+"\" ~ ~ ~3"));
+
+/* قوانين اللعبة */
+const GR=P("commandblockoutput:إظهار ناتج الكوماند بلوك,dodaylightcycle:دورة النهار والليل,doentitydrops:سقوط غنائم الكيانات,dofiretick:انتشار النار,doimmediaterespawn:الولادة الفورية,doinsomnia:ظهور الفانتوم,domobloot:غنائم الوحوش,domobspawning:ظهور الوحوش,dotiledrops:سقوط البلوكات,doweathercycle:دورة الطقس,drowningdamage:ضرر الغرق,falldamage:ضرر السقوط,firedamage:ضرر النار,freezedamage:ضرر التجمد,keepinventory:حفظ الأغراض بعد الموت,mobgriefing:تخريب الوحوش,naturalregeneration:الشفاء الطبيعي,pvp:قتال اللاعبين,respawnblocksexplode:انفجار السرير والمرساة,sendcommandfeedback:رد فعل الأوامر,showcoordinates:إظهار الإحداثيات,showdeathmessages:رسائل الموت,tntexplodes:انفجار TNT,recipesunlock:فتح الوصفات,projectilescanbreakblocks:كسر البلوكات بالقذائف");
+GR.forEach(([id,ar])=>{add("قوانين اللعبة","تشغيل: "+ar,"gamerule "+id+" true");add("قوانين اللعبة","إيقاف: "+ar,"gamerule "+id+" false")});
+[1,3,20,100,1000].forEach(n=>add("قوانين اللعبة","سرعة التك العشوائي "+n,"gamerule randomtickspeed "+n));
+[0,5,10].forEach(n=>add("قوانين اللعبة","نصف قطر الولادة "+n,"gamerule spawnradius "+n));
+[0,50,100].forEach(n=>add("قوانين اللعبة","نسبة النوم المطلوبة "+n+"%","gamerule playerssleepingpercentage "+n));
+add("قوانين اللعبة","حد أوامر الدالة","gamerule functioncommandlimit 10000");
+add("قوانين اللعبة","حد سلسلة الكوماند بلوك 65535","gamerule maxcommandchainlength 65535");
+add("قوانين اللعبة","حد سلسلة الكوماند بلوك 1000","gamerule maxcommandchainlength 1000");
+
+/* وقت وجو */
+[["day","نهار"],["noon","ظهر"],["sunset","غروب"],["night","ليل"],["midnight","منتصف الليل"],["sunrise","شروق"]].forEach(([t,ar])=>add("وقت وجو","الوقت: "+ar,"time set "+t));
+add("وقت وجو","زيادة الوقت 1000","time add 1000");add("وقت وجو","زيادة الوقت 6000","time add 6000");add("وقت وجو","معرفة الوقت","time query daytime");
+add("وقت وجو","نهار دائم","alwaysday true");add("وقت وجو","إلغاء النهار الدائم","alwaysday false");
+add("وقت وجو","جو صافي","weather clear");add("وقت وجو","مطر لدقيقة","weather rain 1200");add("وقت وجو","عاصفة رعدية لدقيقة","weather thunder 1200");add("وقت وجو","صافي لمدة طويلة","weather clear 100000");
+["peaceful:مسالم","easy:سهل","normal:عادي","hard:صعب"].forEach(s=>{const [d,ar]=s.split(":");add("وقت وجو","الصعوبة: "+ar,"difficulty "+d)});
+["survival:بقاء","creative:إبداع","adventure:مغامرة","spectator:مراقب"].forEach(s=>{const [g,ar]=s.split(":");add("وقت وجو","وضعي: "+ar,"gamemode "+g+" @p");add("وقت وجو","وضع الكل: "+ar,"gamemode "+g+" @a")});
+add("وقت وجو","الوضع الافتراضي إبداع","defaultgamemode creative");add("وقت وجو","الوضع الافتراضي بقاء","defaultgamemode survival");
+
+/* انتقال */
+[["فوق 10 بلوكات","~ ~10 ~"],["فوق 50 بلوك","~ ~50 ~"],["فوق 100 بلوك","~ ~100 ~"],["لسقف العالم","~ 320 ~"],["يمين 10","~10 ~ ~"],["يسار 10","~-10 ~ ~"],["قدام 10","~ ~ ~10"],["ورا 10","~ ~ ~-10"],["لمركز العالم","0 100 0"]].forEach(([l,c])=>add("انتقال","انتقال: "+l,"tp @p "+c));
+add("انتقال","اسحب كل اللاعبين إليّ","tp @a @p");add("انتقال","اسحب كل الأغراض الساقطة إليّ","tp @e[type=item] @p");add("انتقال","انتقال عشوائي للاعب آخر","tp @p @r");add("انتقال","اسحب الزومبي القريب مني","tp @e[type=zombie,r=30] @p");add("انتقال","انتقال مع النظر لأقرب كيان","tp @p ~ ~ ~ facing @e[c=1,type=!player]");add("انتقال","ارفع الكل 20 بلوك","tp @a ~ ~20 ~");
+
+/* جزيئات */
+const PAR=P("heart_particle:قلوب,villager_happy:نجوم خضراء,villager_angry:غضب,totem_particle:طوطم,basic_flame_particle:لهب,basic_smoke_particle:دخان,lava_particle:حمم,water_splash_particle:رذاذ ماء,critical_hit_emitter:ضربة حرجة,crop_growth_emitter:نمو,note_particle:نوتة موسيقية,sparkler_emitter:شرارة,evoker_spell:سحر,endrod:قضيب إندر,dragon_breath_fire:نفس التنين,soul_particle:روح,snowflake_particle:ثلج,huge_explosion_emitter:انفجار ضخم,large_explosion:انفجار كبير,explosion_particle:انفجار صغير,electric_spark_particle:كهرباء,bubble_column_up_particle:فقاعات,mob_portal:بوابة,rising_border_dust_particle:غبار صاعد");
+PAR.forEach(([id,ar])=>add("جزيئات","جزيئات: "+ar,"particle minecraft:"+id+" ~ ~1 ~"));
+
+/* أصوات */
+const SND=P("random.levelup:رفع مستوى,random.orb:خبرة,random.explode:انفجار,random.anvil_land:سندان,random.toast:إنجاز,random.totem:طوطم,note.pling:بلينج,note.harp:هارب,note.bell:جرس,note.bass:باس,note.snare:طبل,note.flute:ناي,note.guitar:غيتار,mob.wither.spawn:ولادة الويذر,mob.enderdragon.growl:زئير التنين,mob.endermen.portal:انتقال إندرمان,mob.creeper.say:فحيح كريبر,mob.zombie.say:زومبي,mob.ghast.scream:صراخ غاست,mob.villager.yes:قروي نعم,mob.villager.no:قروي لا,ambient.weather.thunder:رعد,ambient.cave:صوت كهف,random.break:كسر,random.click:نقرة,random.door_open:فتح باب,random.chestopen:فتح صندوق,firework.launch:إطلاق صاروخ,firework.blast:انفجار صاروخ,beacon.activate:تفعيل منارة,beacon.deactivate:إيقاف منارة,portal.travel:سفر البوابة,random.pop:بوب,mob.cat.meow:مواء,mob.wolf.howl:عواء");
+SND.forEach(([id,ar])=>add("أصوات","صوت: "+ar,"playsound "+id+" @a"));
+add("أصوات","إيقاف كل الأصوات","stopsound @a");add("أصوات","تشغيل موسيقى الإبداع","music play music.game.creative");
+
+/* عناوين ورسائل */
+const COL=P("0:أسود,1:أزرق غامق,2:أخضر غامق,3:سماوي غامق,4:أحمر غامق,5:بنفسجي,6:ذهبي,7:رمادي,8:رمادي غامق,9:أزرق,a:أخضر,b:سماوي,c:أحمر,d:وردي,e:أصفر,f:أبيض");
+COL.forEach(([c,ar])=>{add("عناوين ورسائل","عنوان كبير "+ar,"title @a title §"+c+"Hello");add("عناوين ورسائل","شريط سفلي "+ar,"title @a actionbar §"+c+"Hello")});
+add("عناوين ورسائل","عنوان فرعي","title @a subtitle §7Welcome to the server");add("عناوين ورسائل","مدة العنوان","title @a times 10 70 20");add("عناوين ورسائل","مسح العنوان","title @a clear");add("عناوين ورسائل","إعادة ضبط العنوان","title @a reset");
+add("عناوين ورسائل","رسالة say","say Hello everyone");add("عناوين ورسائل","رسالة me","me is ready");add("عناوين ورسائل","رسالة خاصة","msg @p Hello");
+add("عناوين ورسائل","tellraw للكل","tellraw @a {\"rawtext\":[{\"text\":\"§aHello everyone\"}]}");
+add("عناوين ورسائل","tellraw لي","tellraw @p {\"rawtext\":[{\"text\":\"§eHi \"},{\"selector\":\"@p\"}]}");
+add("عناوين ورسائل","titleraw عنوان","titleraw @a title {\"rawtext\":[{\"text\":\"§6Round Start\"}]}");
+add("عناوين ورسائل","titleraw شريط سفلي","titleraw @a actionbar {\"rawtext\":[{\"text\":\"§bGood luck\"}]}");
+
+/* لوحة النقاط */
+[["kills","dummy"],["deaths","dummy"],["points","dummy"],["money","dummy"],["timer","dummy"],["level","dummy"]].forEach(([n,t])=>add("لوحة النقاط","إنشاء لوحة "+n,"scoreboard objectives add "+n+" "+t));
+add("لوحة النقاط","عرض النقاط على الجانب","scoreboard objectives setdisplay sidebar points");
+add("لوحة النقاط","عرض النقاط بقائمة اللاعبين","scoreboard objectives setdisplay list points");
+add("لوحة النقاط","عرض النقاط تحت الاسم","scoreboard objectives setdisplay belowname points");
+add("لوحة النقاط","إخفاء لوحة الجانب","scoreboard objectives setdisplay sidebar");
+add("لوحة النقاط","حذف لوحة points","scoreboard objectives remove points");
+add("لوحة النقاط","قائمة اللوحات","scoreboard objectives list");
+add("لوحة النقاط","نقطة للكل","scoreboard players add @a points 1");
+add("لوحة النقاط","10 نقاط لي","scoreboard players add @p points 10");
+add("لوحة النقاط","خصم نقطة","scoreboard players remove @p points 1");
+add("لوحة النقاط","تصفير نقاط الكل","scoreboard players set @a points 0");
+add("لوحة النقاط","حذف نقاط اللاعب","scoreboard players reset @p");
+add("لوحة النقاط","حذف نقاط points للكل","scoreboard players reset @a points");
+add("لوحة النقاط","عرض نقاط اللاعب","scoreboard players list @p");
+add("لوحة النقاط","اختبار النقاط 5 فأكثر","scoreboard players test @p points 5 *");
+add("لوحة النقاط","جمع kills إلى points","scoreboard players operation @p points += @p kills");
+add("لوحة النقاط","نسخ money إلى points","scoreboard players operation @p points = @p money");
+add("لوحة النقاط","رقم عشوائي 1 إلى 10","scoreboard players random @p points 1 10");
+
+/* بناء */
+const BLK=P("stone:حجر,glass:زجاج,gold_block:ذهب,diamond_block:ألماس,obsidian:أوبسيديان,planks:خشب,brick_block:طوب,sandstone:حجر رملي,quartz_block:كوارتز,emerald_block:زمرد,iron_block:حديد,netherite_block:نذرايت,copper_block:نحاس,glowstone:جلوستون,sea_lantern:فانوس بحري,barrier:حاجز,ice:جليد,packed_ice:جليد مضغوط,snow:ثلج,grass:عشب,dirt:تراب,sand:رمل,gravel:حصى,bedrock:بيدروك,tnt:تي ان تي,lava:حمم,water:ماء,slime:سلايم,honey_block:عسل,cobblestone:حجر مكسّر,mossy_cobblestone:حجر مكسّر مطحلب,deepslate:ديب سليت,redstone_block:ريدستون");
+BLK.forEach(([id,ar])=>add("بناء","منصة "+ar+" 11×11 تحتك","fill ~-5 ~-1 ~-5 ~5 ~-1 ~5 "+id));
+[["غرفة زجاج فارغة 10×10","fill ~-5 ~ ~-5 ~5 ~5 ~5 glass hollow"],["غرفة أوبسيديان فارغة","fill ~-5 ~ ~-5 ~5 ~5 ~5 obsidian hollow"],["غرفة حجر فارغة","fill ~-5 ~ ~-5 ~5 ~5 ~5 stone hollow"],["جدار حدود 20 طول","fill ~ ~ ~ ~20 ~5 ~ stone"],["برج 20 بلوك","fill ~ ~ ~ ~ ~20 ~ stone"],["إطار خارجي فقط","fill ~-5 ~ ~-5 ~5 ~5 ~5 glass outline"],["مسح مربع 10×10 حولك","fill ~-5 ~-5 ~-5 ~5 ~5 ~5 air"],["مسح الهواء فوقك","fill ~-3 ~ ~-3 ~3 ~5 ~3 air"],["استبدال الحجر بهواء","fill ~-10 ~-10 ~-10 ~10 ~10 ~10 air replace stone"],["استبدال الماء بهواء","fill ~-10 ~-10 ~-10 ~10 ~10 ~10 air replace water"],["استبدال الحمم بأوبسيديان","fill ~-10 ~-10 ~-10 ~10 ~10 ~10 obsidian replace lava"],["استبدال العشب بذهب","fill ~-10 ~-2 ~-10 ~10 ~-1 ~10 gold_block replace grass"],["نسخ منطقة بجانبك","clone ~-5 ~ ~-5 ~5 ~5 ~5 ~10 ~ ~-5"],["بركة حمم 5×5","fill ~ ~-1 ~ ~5 ~-1 ~5 lava"],["بركة ماء 5×5","fill ~ ~-1 ~ ~5 ~-1 ~5 water"],["حفرة 5×5 بعمق 5","fill ~ ~-5 ~ ~5 ~-1 ~5 air"]].forEach(([l,c])=>add("بناء",l,c));
+P("tnt:تي ان تي,lava:حمم,water:ماء,fire:نار,web:شبكة عنكبوت,command_block:كوماند بلوك,redstone_block:ريدستون,bedrock:بيدروك,chest:صندوق,crafting_table:طاولة صناعة,furnace:فرن,anvil:سندان,enchanting_table:طاولة سحر,beacon:منارة").forEach(([id,ar])=>add("بناء","ضع "+ar+" فوقك","setblock ~ ~1 ~ "+id));
+
+/* قتل ومسح */
+add("قتل ومسح","اقتل كل الأغراض الساقطة","kill @e[type=item]");add("قتل ومسح","اقتل كل الكائنات عدا اللاعبين","kill @e[type=!player]");add("قتل ومسح","اقتل الأغراض في 10 بلوكات","kill @e[type=item,r=10]");add("قتل ومسح","اقتل كل شي حولك 10 بلوكات","kill @e[r=10,type=!player]");add("قتل ومسح","اقتلني","kill @p");add("قتل ومسح","اقتل كل اللاعبين","kill @a");
+["zombie","skeleton","creeper","spider","enderman","witch","pillager","slime","phantom","cow","pig","sheep","chicken","bat","arrow","tnt","xp_orb"].forEach(t=>add("قتل ومسح","اقتل كل "+t,"kill @e[type="+t+"]"));
+add("قتل ومسح","امسح كل أغراضي","clear @p");add("قتل ومسح","امسح أغراض الكل","clear @a");add("قتل ومسح","امسح الألماس","clear @p diamond");add("قتل ومسح","امسح 10 أسهم","clear @p arrow 0 10");add("قتل ومسح","اضرب لاعب بـ 5 ضرر","damage @p 5");
+
+/* خبرة */
+[["xp 100 @p","أعطني 100 نقطة خبرة"],["xp 1000 @p","أعطني 1000 نقطة خبرة"],["xp 10L @p","10 مستويات لي"],["xp 30L @p","30 مستوى لي"],["xp 100L @p","100 مستوى لي"],["xp -10L @p","اسحب 10 مستويات مني"],["xp 5L @a","5 مستويات للكل"],["xp -5L @a","اسحب 5 مستويات من الكل"]].forEach(([c,l])=>add("خبرة",l,c));
+
+/* سحر */
+const ENC=P("sharpness:الحدة:5,smite:التقديس:5,bane_of_arthropods:لعنة المفصليات:5,knockback:الارتداد:2,fire_aspect:لسعة النار:2,looting:النهب:3,efficiency:الكفاءة:5,silk_touch:اللمسة الحريرية:1,unbreaking:المتانة:3,fortune:الحظ:3,power:القوة:5,punch:اللكمة:2,flame:اللهب:1,infinity:اللانهاية:1,protection:الحماية:4,fire_protection:الحماية من النار:4,blast_protection:الحماية من الانفجار:4,projectile_protection:الحماية من القذائف:4,feather_falling:السقوط الخفيف:4,thorns:الأشواك:3,respiration:التنفس:3,aqua_affinity:الألفة المائية:1,depth_strider:المشي في الأعماق:3,frost_walker:المشي الجليدي:2,soul_speed:سرعة الروح:3,swift_sneak:التسلل السريع:3,mending:الإصلاح:1,luck_of_the_sea:حظ البحر:3,lure:الإغراء:3,loyalty:الولاء:3,riptide:المد:3,channeling:الصاعقة:1,impaling:الخوزقة:5,multishot:التصويب المتعدد:1,piercing:الاختراق:4,quick_charge:الشحن السريع:3");
+ENC.forEach(([id,ar,l])=>add("سحر","سحر "+ar+" للغرض اللي بيدك","enchant @p "+id+" "+l));
+
+/* درع */
+[["leather","جلد"],["chainmail","سلاسل"],["iron","حديد"],["golden","ذهب"],["diamond","ألماس"],["netherite","نذرايت"]].forEach(([m,ar])=>[["head","helmet","خوذة"],["chest","chestplate","صدرية"],["legs","leggings","بنطلون"],["feet","boots","حذاء"]].forEach(([s,n,a2])=>add("درع وأغراض اليد",a2+" "+ar+" ألبسها مباشرة","replaceitem entity @p slot.armor."+s+" 0 "+m+"_"+n)));
+[["weapon.offhand","totem_of_undying","طوطم باليد الثانية"],["weapon.offhand","shield","درع باليد الثانية"],["weapon.mainhand","netherite_sword","سيف نذرايت باليد"],["weapon.mainhand","trident","ترايدنت باليد"],["weapon.mainhand","bow","قوس باليد"]].forEach(([s,i,l])=>add("درع وأغراض اليد",l,"replaceitem entity @p slot."+s+" 0 "+i));
+add("درع وأغراض اليد","ألماس بخانة الهوتبار 1","replaceitem entity @p slot.hotbar 0 diamond 64");
+add("درع وأغراض اليد","تفاح ذهبي بالهوتبار","replaceitem entity @p slot.hotbar 1 golden_apple 16");
+
+/* execute */
+[["جزيئات قلوب فوق كل لاعب","execute as @a at @s run particle minecraft:heart_particle ~ ~2 ~"],["اجعل الزومبي أسرع","execute as @e[type=zombie] at @s run effect @s speed 10 2 true"],["صاعقة على أقرب لاعب","execute as @p at @s run summon lightning_bolt ~ ~ ~"],["TNT فوق اللاعب","execute as @p at @s run summon tnt ~ ~3 ~"],["ألعاب نارية عند كل لاعب","execute at @a run summon fireworks_rocket ~ ~ ~"],["ألماسة إذا وقفت على بلوك ألماس","execute as @a at @s if block ~ ~-1 ~ diamond_block run give @s diamond 1"],["سرعة على بلوك ذهب","execute as @a at @s if block ~ ~-1 ~ gold_block run effect @s speed 5 3 true"],["قفز على بلوك سلايم","execute as @a at @s if block ~ ~-1 ~ slime_block run effect @s jump_boost 2 5 true"],["تحذير إذا زومبي قريب","execute as @a at @s if entity @e[type=zombie,r=5] run title @s actionbar §cDanger"],["هدية لمن عنده تاغ vip","execute as @a[tag=vip] run give @s diamond 1"],["رسالة للي بوضع الإبداع","execute as @a[m=creative] run say creative mode"],["رسالة لمن يحمل ألماس","execute as @a[hasitem={item=diamond,quantity=1..}] run title @s actionbar §bRich"],["مكافأة عند 10 نقاط","execute as @a[scores={points=10..}] run give @s diamond 1"],["إنقاذ من الفراغ","execute as @a[y=-80,dy=16] run tp @s ~ 100 ~"],["جزيئات على الأغراض الساقطة","execute as @e[type=item] at @s run particle minecraft:endrod ~ ~ ~"],["جليد تحت قدميك","execute as @a at @s run fill ~-1 ~-1 ~-1 ~1 ~-1 ~1 ice"],["اجذب الزومبي لأقرب لاعب","execute as @p at @s run tp @e[type=zombie,r=20] ~ ~ ~"],["امسح الأغراض قربك","execute as @p at @s run kill @e[type=item,r=5]"],["استدعاء من 5 فوق","execute positioned ~ ~5 ~ run summon zombie"]].forEach(([l,c])=>add("execute",l,c));
+
+/* هياكل ومناطق */
+P("village:قرية,stronghold:حصن,mansion:قصر الغابة,monument:معبد المحيط,fortress:قلعة النذر,bastionremnant:بقايا الحصن,ancientcity:المدينة القديمة,mineshaft:منجم,shipwreck:سفينة غارقة,ruins:خرائب,pillageroutpost:موقع النهابين,desertpyramid:هرم صحراوي,junglepyramid:معبد الأدغال,endcity:مدينة الإندر,igloo:إيجلو,swamphut:كوخ المستنقع").forEach(([id,ar])=>add("هياكل ومناطق","ابحث عن "+ar,"locate structure "+id));
+add("هياكل ومناطق","منطقة تحميل دائمة","tickingarea add circle ~ ~ ~ 4 area1");add("هياكل ومناطق","قائمة مناطق التحميل","tickingarea list");add("هياكل ومناطق","حذف كل مناطق التحميل","tickingarea remove_all");add("هياكل ومناطق","حفظ بناء","structure save mybuild ~ ~ ~ ~5 ~5 ~5");add("هياكل ومناطق","تحميل بناء محفوظ","structure load mybuild ~ ~ ~");
+
+/* متفرقات */
+[["نقطة ولادة لي","spawnpoint @p"],["نقطة ولادة بمكاني","spawnpoint @p ~ ~ ~"],["ولادة العالم هنا","setworldspawn ~ ~ ~"],["ولادة العالم بالمركز","setworldspawn 0 100 0"],["الطيران لي","ability @p mayfly true"],["إلغاء الطيران","ability @p mayfly false"],["رفع الكتم","ability @p mute false"],["بناء العالم لي","ability @p worldbuilder true"],["أعطني OP","op @p"],["إزالة OP","deop @p"],["قائمة اللاعبين","list"],["اهتزاز الكاميرا","camerashake add @p 1 2 positional"],["إيقاف الاهتزاز","camerashake stop @p"],["تعتيم الكاميرا","camera @p fade time 1 1 1 color 0 0 0"],["منع الحركة","inputpermission set @p movement disabled"],["السماح بالحركة","inputpermission set @p movement enabled"],["كريبر مشحون","event entity @e[type=creeper] minecraft:become_charged"],["اختبار وجود لاعب","testfor @p"],["اختبار بلوك تحتك","testforblock ~ ~-1 ~ diamond_block"],["إيقاف أحداث الدوريات","mobevent minecraft:pillager_patrols_event false"],["تشغيل أحداث الدوريات","mobevent minecraft:pillager_patrols_event true"],["اركب حصان جديد","ride @p summon_ride horse"],["انزل من الركوب","ride @p stop_riding"],["أعطني تاغ vip","tag @p add vip"],["إزالة تاغ vip","tag @p remove vip"],["تاغ للكل","tag @a add player"],["قائمة تاغاتي","tag @p list"],["سهم يطير","summon arrow ~ ~2 ~"],["كرة ثلج","summon snowball ~ ~2 ~"],["ثلج يغطي الجو","weather rain"],["قائمة الأوامر","help"]].forEach(([l,c])=>add("متفرقات",l,c));
+</script>
+
+<script>
+const E=["speed","strength","haste","jump_boost","regeneration","resistance","night_vision","water_breathing","slow_falling","absorption","invisibility","fire_resistance"];
+const MOBS=["zombie","skeleton","creeper","spider","enderman","witch","pillager","iron_golem","wolf","blaze","husk","stray","drowned","slime","piglin","cow","pig","sheep"];
+const W=["diamond_sword","netherite_sword","iron_axe","bow","crossbow","trident","diamond_pickaxe","netherite_axe"];
+const A=["diamond_chestplate","netherite_chestplate","iron_chestplate","chainmail_chestplate"];
+const BL=["stone","glass","gold_block","diamond_block","obsidian","oak_planks","brick_block","sandstone","quartz_block","emerald_block","iron_block"];
+const IT=["golden_apple","diamond","ender_pearl","arrow","cooked_beef","iron_ingot"];
+const R=(c,t)=>({c,t:t||"c"});
+const G=[
+{n:"كيت (give + effect + title)",f:[["w","السلاح","s",W],["a","الدرع","s",A],["e","التأثير","s",E]],
+ b:v=>[R("give @p "+v.w+" 1","i"),R("give @p "+v.a+" 1"),R("effect @p "+v.e+" 60 1 true"),R("title @p actionbar §aKit ready")]},
+{n:"تأثيران مع جزيئات وصوت",f:[["e1","التأثير 1","s",E],["e2","التأثير 2","s",E],["s","الثواني","n",30],["l","القوة","n",1]],
+ b:v=>[R("effect @p "+v.e1+" "+v.s+" "+v.l+" true","i"),R("effect @p "+v.e2+" "+v.s+" "+v.l+" true"),R("execute as @p at @s run particle minecraft:villager_happy ~ ~1 ~"),R("playsound random.levelup @p")]},
+{n:"وحش Boss",f:[["m","الوحش","s",MOBS],["nm","الاسم","t","Boss"],["k","العدد","n",1]],
+ b:v=>{const r=[];for(let i=0;i<v.k;i++)r.push(R('summon '+v.m+' "'+v.nm+'" ~'+(i*2)+' ~ ~3',i?"c":"i"));r.push(R("effect @e[type="+v.m+",name="+v.nm+"] resistance 60 2 true"),R("playsound mob.wither.spawn @a"),R("title @a actionbar §c"+v.nm+" appeared"));return r}},
+{n:"انتقال (tp)",f:[["x","X","n",0],["y","Y","n",100],["z","Z","n",0]],
+ b:v=>[R("tp @p "+v.x+" "+v.y+" "+v.z,"i"),R("effect @p slow_falling 10 0 true"),R("title @p actionbar §bTeleported"),R("playsound mob.endermen.portal @p")]},
+{n:"بناء منصة أو غرفة",f:[["b","البلوك","s",BL],["sh","الشكل","s",["platform","room"]],["s","الحجم (نصف القطر)","n",3]],
+ b:v=>[R(v.sh=="platform"?"execute as @p at @s run fill ~-"+v.s+" ~-1 ~-"+v.s+" ~"+v.s+" ~-1 ~"+v.s+" "+v.b:"execute as @p at @s run fill ~-"+v.s+" ~ ~-"+v.s+" ~"+v.s+" ~"+(+v.s+1)+" ~"+v.s+" "+v.b+" hollow","i"),R("execute as @p at @s run particle minecraft:totem_particle ~ ~1 ~"),R("playsound random.orb @p")]},
+{n:"وقت وجو",f:[["t","الوقت","s",["day","noon","sunset","night","midnight","sunrise"]],["w","الجو","s",["clear","rain","thunder"]]],
+ b:v=>[R("time set "+v.t,"i"),R("weather "+v.w),R("title @a actionbar §e"+v.t+" / "+v.w),R("playsound note.pling @a")]},
+{n:"عدّاد تنازلي",f:[["s","الثواني","n",10]],
+ b:v=>[R("scoreboard objectives add cd dummy","i"),R("scoreboard players set @a cd "+v.s*20),R("execute as @a[scores={cd=1..}] run scoreboard players remove @s cd 1","r"),R("execute as @a[scores={cd=0}] run title @s actionbar §aGO!"),R("execute as @a[scores={cd=0}] run scoreboard players set @s cd -1")]},
+{n:"كول داون",f:[["s","الثواني","n",10],["it","الغرض","s",IT]],
+ b:v=>[R("scoreboard objectives add cd2 dummy","i"),R("scoreboard players add @a cd2 0"),R("execute as @p[scores={cd2=..0}] run give @s "+v.it+" 1"),R("execute as @p[scores={cd2=..0}] run scoreboard players set @s cd2 "+v.s*20),R("execute as @a[scores={cd2=1..}] run scoreboard players remove @s cd2 1","r")]},
+{n:"توليد متكرر",f:[["m","الكائن","s",MOBS],["s","كل كم ثانية","n",10]],
+ b:v=>[R("scoreboard objectives add loop dummy","i"),R("scoreboard players set spawner loop 0"),R("scoreboard players add spawner loop 1","r"),R("execute if score spawner loop matches "+v.s*20+".. run summon "+v.m+" 0 70 0"),R("execute if score spawner loop matches "+v.s*20+".. run scoreboard players set spawner loop 0")]},
+{n:"حظ عشوائي",f:[["k","1 من كم؟","n",5]],
+ b:v=>[R("scoreboard objectives add roll dummy","i"),R("scoreboard players random @p roll 1 "+v.k),R("execute as @p[scores={roll=1}] run give @s diamond 1"),R("execute as @p[scores={roll=1}] run title @s actionbar §6Lucky!"),R("execute as @p[scores={roll=2..}] run title @s actionbar §7Try again")]},
+{n:"مكافأة مرة وحدة",f:[["it","الغرض","s",IT]],
+ b:v=>[R("execute as @a[tag=!claimed] run give @s "+v.it+" 1","i"),R("execute as @a[tag=!claimed] run title @s actionbar §aClaimed"),R("execute as @a[tag=!claimed] run tag @s add claimed")]},
+{n:"مكافأة نقاط",f:[["k","النقاط المطلوبة","n",10]],
+ b:v=>[R("execute as @a[scores={points="+v.k+"..}] run give @s diamond 1","i"),R("execute as @a[scores={points="+v.k+"..}] run title @s actionbar §aReward"),R("execute as @a[scores={points="+v.k+"..}] run scoreboard players remove @s points "+v.k)]},
+{n:"Toggle (تشغيل وإيقاف)",f:[["x","الشي","s",["الدورة","الجو","الوقت"]]],
+ b:v=>{const T={"الدورة":["gamerule dodaylightcycle false","gamerule dodaylightcycle true"],"الجو":["weather rain","weather clear"],"الوقت":["time set night","time set day"]}[v.x];return[R("scoreboard objectives add tg dummy","i"),R("scoreboard players add toggler tg 0"),R("execute if score toggler tg matches 1 run "+T[1]),R("execute if score toggler tg matches 1 run scoreboard players set toggler tg 2"),R("execute if score toggler tg matches 0 run "+T[0]),R("execute if score toggler tg matches 0 run scoreboard players set toggler tg 1"),R("execute if score toggler tg matches 2 run scoreboard players set toggler tg 0")]}},
+{n:"إيقاف الوقت (ZA WARUDO)",f:[["s","المدة بالثواني","n",10]],
+ b:v=>{const q="execute if score active ts matches 1 if score timer ts matches ..0 run ";return[R("scoreboard objectives add ts dummy","i"),R("tag @a remove zawarudo"),R("tag @p add zawarudo"),R("scoreboard players set timer ts "+v.s*20),R("scoreboard players set active ts 1"),R("gamerule dodaylightcycle false"),R("execute if score active ts matches 1 run effect @e[type=!player,tag=!zawarudo] slowness 1 255 true","r"),R("execute if score active ts matches 1 run effect @a[tag=!zawarudo] slowness 1 255 true"),R("execute if score active ts matches 1 run scoreboard players remove timer ts 1"),R(q+"gamerule dodaylightcycle true"),R(q+"tag @a remove zawarudo"),R(q+"effect @e clear"),R(q+"scoreboard players set active ts 0")]}}
+];
+const LBL={i:"Impulse · Needs Redstone",c:"Chain · Always Active",r:"Repeating · Always Active"};
+const $=s=>document.querySelector(s);
+
+/* وضع النسخ: كوماند بلوك أو شات */
+let chat=false;try{chat=localStorage.getItem("cm")=="1"}catch(e){}
+const fmt=c=>chat?"/"+c:c;
+function syncMode(){document.querySelectorAll(".mode button").forEach(b=>b.classList.toggle("on",(b.dataset.m=="chat")==chat))}
+document.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{chat=b.dataset.m=="chat";try{localStorage.setItem("cm",chat?"1":"0")}catch(e){}syncMode()});
+syncMode();
+
+const cat=$("#cat"),fields=$("#fields"),out=$("#out");
+G.forEach((g,i)=>cat.add(new Option(g.n,i)));
+function form(){const g=G[cat.value];fields.innerHTML="";g.f.forEach(([id,lb,k,d])=>{const l=document.createElement("label");l.textContent=lb;l.htmlFor="f_"+id;let e;if(k=="s"){e=document.createElement("select");d.forEach(o=>e.add(new Option(o,o)))}else{e=document.createElement("input");e.type=k=="n"?"number":"text";e.value=d}e.id="f_"+id;e.oninput=draw;fields.append(l,e)});draw()}
+let cur=[];
+function draw(){const g=G[cat.value],v={};g.f.forEach(([id,,k])=>{const e=$("#f_"+id);v[id]=k=="n"?(+e.value||0):e.value});cur=g.b(v);out.innerHTML="";cur.forEach((r,n)=>{const d=document.createElement("div");d.className="row";d.innerHTML='<div class="cube '+r.t+'">'+(n+1)+'</div><div style="flex:1;min-width:0"><small>'+LBL[r.t]+'</small><pre></pre></div>';d.querySelector("pre").textContent=r.c;d.onclick=()=>cp(fmt(r.c),d.querySelector("small"),LBL[r.t]);out.append(d)})}
+function cp(t,el,back){const done=()=>{if(el){el.textContent="تم النسخ";setTimeout(()=>el.textContent=back,900)}};if(window.AB){try{AB.copy(t);done();return}catch(e){}}try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}function fb(){const a=document.createElement("textarea");a.value=t;document.body.append(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove();done()}}
+$("#copyAll").onclick=function(){const b=this;cp(cur.map(r=>fmt(r.c)).join("\n"),null);b.textContent="تم النسخ";setTimeout(()=>b.textContent="نسخ كل الأوامر",900)};
+cat.onchange=form;form();
+
+/* المكتبة */
+function mkRow(l,m){const d=document.createElement("div");d.className="lr";const s=document.createElement("small");s.textContent=l;const p=document.createElement("pre");p.textContent=m;d.append(s,p);d.onclick=()=>cp(fmt(m),s,l);return d}
+const CATS=[...new Set(LIB.map(x=>x.c))];
+const lq=$("#lq"),lc=$("#lcat"),ll=$("#llist"),lm=$("#lmore"),lcount=$("#lcount");
+lc.add(new Option("كل الأقسام ("+LIB.length+")",""));
+CATS.forEach(c=>lc.add(new Option(c+" ("+LIB.filter(x=>x.c==c).length+")",c)));
+let lres=[],lshown=0;
+function lmore(){lres.slice(lshown,lshown+40).forEach(x=>ll.append(mkRow(x.l,x.m)));lshown=Math.min(lres.length,lshown+40);lm.classList.toggle("hide",lshown>=lres.length)}
+function libFilter(){const q=lq.value.trim().toLowerCase(),c=lc.value;lres=LIB.filter(x=>(!c||x.c==c)&&(!q||x.l.toLowerCase().includes(q)||x.m.toLowerCase().includes(q)));lshown=0;ll.innerHTML="";lmore();lcount.textContent=lres.length+" أمر"}
+lq.oninput=libFilter;lc.onchange=libFilter;lm.onclick=lmore;libFilter();
+
+/* الدروس */
+const L=[["شلون أبدأ؟","جيب بلوك أوامر بـ give @s command_block. حطه، اضغط عليه، الصق الأمر، واختار النوع والتفعيل."],["ليش @s ما يشتغل؟","داخل البلوك @s يعني البلوك نفسه. استخدم execute as @p run لتخلي @s يصير اللاعب."],["20 تك = ثانية","التأخير والعدّادات تحسب بالتكات. 100 تك = 5 ثواني."],["الإحداثيات","~ نسبي لمكان التنفيذ. ~ ~1 ~ يعني فوق بلوك. الأرقام العادية ثابتة."],["لوحة النقاط","سوّ لوحة بـ scoreboard objectives add اسم dummy، وبعدها set وadd وremove لتغيير الأرقام."],["التاغات","tag تعلّم اللاعب. بعدها تقدر تستهدفه بـ @a[tag=اسم]."],["البلوك أحمر؟","معناها الأمر فشل. شيّك الكتابة والمسافات والـ objective، وأضف say test بين البلوكات للفحص."],["شلون أرتّب السلسلة؟","بلوكات Chain بخط مستقيم وسهم كل بلوك لنفس الاتجاه. أول بلوك هو الزناد."],["الشات مقابل الكوماند بلوك","بالشات لازم تبدأ الأمر بـ / ، وبالكوماند بلوك بدون /. اختار الوضع من الأزرار فوق والنسخ يضيفها لك."]];
+$("#learn").innerHTML=L.map(([t,d])=>"<details><summary>"+t+"</summary><p>"+d+"</p></details>").join("");
+
+/* التبويبات */
+const TABS=["gen","lib","blocks","learn"];
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));TABS.forEach(id=>$("#"+id).classList.toggle("hide",id!=b.dataset.t))});
+
+/* الدائرة العايمة والقائمة السريعة */
+const fab=$("#fab"),pnl=$("#pnl"),pb=$("#pb"),pq=$("#pq");
+const defs=g=>{const v={};g.f.forEach(([id,,k,d])=>v[id]=k=="s"?d[0]:d);return v};
+let pv=null;
+function renderPnl(){
+ pb.innerHTML="";const q=pq.value.trim().toLowerCase();
+ if(q){
+  const gs=G.filter(g=>g.n.toLowerCase().includes(q));
+  if(gs.length){const h=document.createElement("div");h.className="ph2";h.textContent="السكريبتات";pb.append(h);gs.forEach(g=>pb.append(pitem(g.n,"",()=>{pq.value="";openScript(g)})))}
+  const m=LIB.filter(x=>x.l.toLowerCase().includes(q)||x.m.toLowerCase().includes(q));
+  const h=document.createElement("div");h.className="ph2";h.textContent="الأوامر ("+m.length+")";pb.append(h);
+  m.slice(0,50).forEach(x=>pb.append(mkRow(x.l,x.m)));
+  if(m.length>50){const p=document.createElement("p");p.textContent="اكتب أكثر لتضييق النتائج، أو افتح تبويب المكتبة.";pb.append(p)}
+  return}
+ if(pv){
+  const bk=document.createElement("div");bk.className="bk";
+  const back=document.createElement("button");back.textContent="← رجوع";back.onclick=()=>{pv=null;renderPnl()};
+  const all=document.createElement("button");all.className="go";all.textContent="نسخ الكل";
+  all.onclick=()=>cp(pv.rows.map(r=>fmt(r.m)).join("\n"),all,"نسخ الكل");
+  bk.append(back,all);pb.append(bk);
+  const t=document.createElement("div");t.className="ph2";t.textContent=pv.t+" ("+pv.rows.length+")";pb.append(t);
+  pv.rows.forEach(r=>pb.append(mkRow(r.l,r.m)));return}
+ const h1=document.createElement("div");h1.className="ph2";h1.textContent="السكريبتات الجاهزة";pb.append(h1);
+ G.forEach(g=>pb.append(pitem(g.n,"",()=>openScript(g))));
+ const h2=document.createElement("div");h2.className="ph2";h2.textContent="مكتبة الأوامر";pb.append(h2);
+ CATS.forEach(c=>{const rows=LIB.filter(x=>x.c==c);pb.append(pitem(c,rows.length,()=>{pv={t:c,rows};renderPnl();pb.scrollTop=0}))});
+}
+function pitem(name,count,fn){const b=document.createElement("button");b.className="pi";const a=document.createElement("b");a.textContent=name;a.style.fontWeight="400";b.append(a);if(count!==""){const s=document.createElement("span");s.textContent=count;b.append(s)}b.onclick=fn;return b}
+function openScript(g){pv={t:g.n,rows:g.b(defs(g)).map(r=>({l:LBL[r.t],m:r.c}))};renderPnl();pb.scrollTop=0}
+{const _rp=renderPnl;renderPnl=function(){_rp();if(!pnl.classList.contains("hide"))placePnl()}}
+pq.oninput=()=>renderPnl();
+
+/* حجم الشاشة الحقيقي (بعض المعاينات تعطي ارتفاع غلط) */
+const VW=()=>{const w=Math.min(innerWidth||360,screen.width||9999);return w>120?w:360};
+const VH=()=>{const h=Math.min(innerHeight||640,screen.height||9999);return h>200?h:640};
+let pos={x:VW()-72,y:Math.round(VH()*.6)};
+try{const s=JSON.parse(localStorage.getItem("fp"));if(s&&isFinite(s.x)&&isFinite(s.y)&&s.x>=0&&s.y>=0&&s.x<VW()-20&&s.y<VH()-20)pos=s}catch(e){}
+function placePnl(){
+ const w=Math.min(VW()*.94,360);pnl.style.width=w+"px";
+ let l=pos.x+28-w/2;l=Math.min(Math.max(8,l),VW()-w-8);pnl.style.left=l+"px";
+ const low=pos.y>VH()/2;
+ pnl.style.bottom="auto";
+ pnl.style.maxHeight=Math.max(160,Math.min(520,low?pos.y-16:VH()-pos.y-72))+"px";
+ const h=pnl.offsetHeight;
+ pnl.style.top=(low?Math.max(8,pos.y-h-8):pos.y+64)+"px"}
+function place(){pos.x=Math.min(Math.max(8,pos.x),VW()-64);pos.y=Math.min(Math.max(8,pos.y),VH()-64);fab.style.left=pos.x+"px";fab.style.top=pos.y+"px";if(!pnl.classList.contains("hide"))placePnl()}
+function togglePnl(force){const open=force!==undefined?force:pnl.classList.contains("hide");pnl.classList.toggle("hide",!open);if(open){renderPnl();placePnl()}}
+let drag=null;
+fab.addEventListener("pointerdown",e=>{drag={sx:e.clientX,sy:e.clientY,ox:pos.x,oy:pos.y,m:false};try{fab.setPointerCapture(e.pointerId)}catch(x){}});
+fab.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>6)drag.m=true;if(drag.m){pos.x=drag.ox+dx;pos.y=drag.oy+dy;place()}});
+fab.addEventListener("pointerup",()=>{if(!drag)return;const m=drag.m;drag=null;if(m){try{localStorage.setItem("fp",JSON.stringify(pos))}catch(x){}}else togglePnl()});
+fab.addEventListener("pointercancel",()=>{drag=null});
+$("#px").onclick=()=>togglePnl(false);
+addEventListener("resize",place);
+place();
+
+/* وضع التطبيق (APK): الدائرة الحقيقية من أندرويد، فنخفي دائرة الصفحة */
+if(window.AB){
+ fab.style.display="none";pnl.style.display="none";
+ document.body.style.paddingTop="8px";
+ document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))AB.setFocusable(true)});
+ document.addEventListener("focusout",()=>AB.setFocusable(false));
+}
+</script></body></html>
