@@ -226,7 +226,9 @@ class OverlayService : Service() {
             settings.domStorageEnabled = true
             setBackgroundColor(0xFF15171C.toInt())
             addJavascriptInterface(Bridge(), "AB")
-            loadUrl("file:///android_asset/index.html")
+            settings.allowFileAccess = true
+            val updated = java.io.File(filesDir, "index.html")
+            loadUrl(if (updated.exists()) "file://" + updated.absolutePath else "file:///android_asset/index.html")
         }
 
         panel.addView(bar, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (44 * dp).toInt()))
