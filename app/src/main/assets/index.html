@@ -64,11 +64,20 @@ details{border-bottom:1px solid var(--bd);padding:8px 0}summary{font-weight:700;
 .gb .ga{display:flex;gap:6px;margin-top:6px}
 .gb .ga button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:6px;padding:4px 10px;font:inherit}
 .gb.e{background:#b3261e;color:#fff}
+nav{overflow-x:auto}nav button{white-space:nowrap}
+.tc{border:1px solid var(--bd);border-radius:10px;margin:8px 0;background:var(--sf)}.tc summary{padding:12px;font-weight:700}
+.tb{padding:0 12px 12px}.tb label{display:block;margin:8px 0 2px;color:var(--mu);font-size:13px}
+.tb input,.tb select,.tb textarea,#tls{width:100%;padding:9px;border:2px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;box-sizing:border-box}
+.qg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.tbt,.qg button{padding:9px 6px;border:2px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;margin-top:6px}
+.cb{background:var(--code,#0c0d10);color:#ececec;font-family:monospace;padding:10px;border-radius:8px;margin:8px 0;white-space:pre-wrap;word-break:break-all;direction:ltr;text-align:left}
+.rw{display:flex;gap:6px;align-items:center;margin:6px 0}.rw span{flex:1;word-break:break-all}
+#gch{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}#gch button{padding:7px 10px;border:1px solid var(--bd);border-radius:16px;background:var(--sf);color:var(--tx);font:inherit;font-size:13px}
 </style></head><body>
 <h1>مختبر الكوماند بلوك</h1>
 <p>اختار نوع السكريبت، عدّل الخيارات، وخذ الأوامر جاهزة. اضغط على أي سطر لنسخه.</p>
 <div class="mode" aria-label="وضع النسخ"><button data-m="cb">نسخ للكوماند بلوك</button><button data-m="chat">نسخ للشات (يضيف /)</button></div>
-<nav><button data-t="gen" class="on">المولّد</button><button data-t="lib">المكتبة</button><button data-t="blocks">البلوكات</button><button data-t="learn">دروس</button><button data-t="gm">جيميناي</button></nav>
+<nav><button data-t="gen" class="on">المولّد</button><button data-t="lib">المكتبة</button><button data-t="blocks">البلوكات</button><button data-t="learn">دروس</button><button data-t="gm">جيميناي</button><button data-t="tl">أدوات</button></nav>
 
 <section id="gen">
 <div class="card"><label for="cat">نوع السكريبت</label><select id="cat"></select><div id="fields"></div></div>
@@ -114,6 +123,7 @@ details{border-bottom:1px solid var(--bd);padding:8px 0}summary{font-weight:700;
 <div id="gmsgs"></div>
 <div class="card"><textarea id="gin" rows="3" placeholder="اكتب رسالتك لجيميناي..."></textarea><div class="gr"><button id="gsend">إرسال</button></div></div>
 </section>
+<section id="tl" class="hide"></section>
 
 <button id="fab" aria-label="قائمة السكريبتات" title="اسحبها وين ما تريد، واضغط عليها لفتح القائمة">⚡</button>
 <div id="pnl" class="hide" role="dialog" aria-label="قائمة السكريبتات السريعة">
@@ -314,7 +324,7 @@ const L=[["شلون أبدأ؟","جيب بلوك أوامر بـ give @s command
 $("#learn").innerHTML=L.map(([t,d])=>"<details><summary>"+t+"</summary><p>"+d+"</p></details>").join("");
 
 /* التبويبات */
-const TABS=["gen","lib","blocks","learn","gm"];
+const TABS=["gen","lib","blocks","learn","gm","tl"];
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));TABS.forEach(id=>$("#"+id).classList.toggle("hide",id!=b.dataset.t))});
 
 /* الدائرة العايمة والقائمة السريعة */
@@ -450,6 +460,87 @@ $("gnew").onclick=function(){mk();fillConvs();render()};
 $("gdel").onclick=function(){if(!cur)return;convs=convs.filter(function(x){return x.id!==cur});cur=convs[0]?convs[0].id:"";save();fillConvs();render()};
 $("gsend").onclick=send;
 fillModels();fillConvs();render();if(g(K))msg("المفتاح محفوظ ✅");
+})();
+</script>
+<script>
+(function(){
+function $(i){return document.getElementById(i)}
+var mem={};
+function g(k,d){try{var v=localStorage.getItem(k);if(v===null)v=mem[k];return v===undefined||v===null?d:JSON.parse(v)}catch(e){return d}}
+function w(k,v){var j=JSON.stringify(v);mem[k]=j;try{localStorage.setItem(k,j)}catch(e){}}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function btn(t,f,c){var b=el("button",c||"tbt",t);b.type="button";b.onclick=function(){f(b)};return b}
+var T=$("tl");
+/* ---- سجل النسخ ---- */
+var oc=window.cp,rh=function(){};
+window.cp=function(t,e,b){try{if(typeof t==="string"&&t.length<300){var h=g("tl_h",[]);if(h[0]!==t){h.unshift(t);w("tl_h",h.slice(0,50));rh()}}}catch(x){}return oc(t,e,b)};
+/* ---- مساعدات البناء ---- */
+var sr=el("input");sr.id="tls";sr.placeholder="🔍 ابحث في الأدوات";T.appendChild(sr);
+sr.oninput=function(){var q=sr.value.trim();Array.prototype.forEach.call(T.querySelectorAll("details"),function(d){d.style.display=!q||d.firstChild.textContent.indexOf(q)>-1?"":"none"})};
+function box(t,f){var d=el("details","tc");d.appendChild(el("summary","",t));var b=el("div","tb");d.appendChild(b);f(b,d);T.appendChild(d)}
+function quick(t,l){box(t,function(b){var gd=el("div","qg");l.forEach(function(x){gd.appendChild(btn(x[0],function(e){cp(x[1],e,x[0])},""))});b.appendChild(gd)})}
+function build(t,fs,cmd){box(t,function(b){var E={};
+function up(){var v={};for(var k in E)v[k]=E[k].value;o.textContent=cmd(v)}
+fs.forEach(function(f){var e;if(Array.isArray(f[2])){e=el("select");f[2].forEach(function(x){e.add(new Option(x,x))})}else{e=el("input");e.type=f[2]==="n"?"number":"text"}
+if(f[3]!==undefined)e.value=f[3];e.oninput=e.onchange=up;E[f[0]]=e;b.appendChild(el("label","",f[1]));b.appendChild(e)});
+var o=el("div","cb");b.appendChild(o);b.appendChild(btn("نسخ",function(e){cp(o.textContent,e,"نسخ")}));up()})}
+function list(b,key,row){var c=el("div");b.appendChild(c);return function(){c.innerHTML="";g(key,[]).forEach(function(x,i){c.appendChild(row(x,i))})}}
+/* ---- أوامر سريعة (٦) ---- */
+quick("وضع اللعب",[["إبداع","gamemode creative"],["بقاء","gamemode survival"],["مغامرة","gamemode adventure"],["مراقب","gamemode spectator"]].map(function(x){return[x[0],"/"+x[1]]}));
+quick("الوقت",[["نهار","day"],["ظهر","noon"],["ليل","night"],["منتصف الليل","midnight"]].map(function(x){return[x[0],"/time set "+x[1]]}));
+quick("الطقس",[["صحو","clear"],["مطر","rain"],["عاصفة","thunder"]].map(function(x){return[x[0],"/weather "+x[1]]}));
+quick("الصعوبة",[["مسالم","peaceful"],["سهل","easy"],["عادي","normal"],["صعب","hard"]].map(function(x){return[x[0],"/difficulty "+x[1]]}));
+var gr=[];["keepInventory","doDaylightCycle","doMobSpawning","mobGriefing","doFireTick","pvp","showCoordinates","doWeatherCycle"].forEach(function(r){gr.push([r+" ✅","/gamerule "+r+" true"]);gr.push([r+" ❌","/gamerule "+r+" false"])});
+quick("قوانين اللعبة",gr);
+quick("أوامر متنوعة",[["قتل الأغراض","/kill @e[type=item]"],["قتل الوحوش","/kill @e[type=!player,family=monster]"],["مسح الحقيبة","/clear @p"],["١٠ مستويات","/xp 10L @p"],["إزالة التأثيرات","/effect @p clear"],["نقطة الظهور","/setworldspawn ~ ~ ~"],["نقطة عودتي","/spawnpoint @p ~ ~ ~"],["أقرب قرية","/locate structure village"]]);
+/* ---- بناة الأوامر (١٠) ---- */
+build("إعطاء غرض",[["i","الغرض (بالإنجليزي)","t","diamond_sword"],["c","العدد","n",1]],function(v){return"/give @p "+v.i+" "+v.c});
+build("تأثير",[["e","التأثير",["speed","slowness","haste","strength","instant_health","jump_boost","regeneration","resistance","fire_resistance","water_breathing","invisibility","night_vision","absorption","saturation","levitation","slow_falling","wither","poison"]],["s","الثواني","n",60],["a","القوة","n",1],["h","إخفاء الجزيئات",["true","false"]]],function(v){return"/effect @p "+v.e+" "+v.s+" "+v.a+" "+v.h});
+build("سحر (غرض بيدك)",[["e","السحر",["sharpness","protection","efficiency","unbreaking","fortune","looting","power","infinity","mending","fire_aspect","knockback","silk_touch","thorns","feather_falling","respiration","depth_strider","smite","punch","flame","riptide"]],["l","المستوى","n",5]],function(v){return"/enchant @p "+v.e+" "+v.l});
+build("استدعاء كائن",[["e","الكائن","t","zombie"]],function(v){return"/summon "+v.e+" ~ ~ ~"});
+build("تعبئة (fill)",[["a","من X Y Z","t","~ ~ ~"],["b","إلى X Y Z","t","~10 ~5 ~10"],["k","البلوك","t","stone"],["m","الوضع",["","replace","hollow","outline","destroy","keep"]]],function(v){return"/fill "+v.a+" "+v.b+" "+v.k+(v.m?" "+v.m:"")});
+build("وضع بلوك",[["p","المكان X Y Z","t","~ ~ ~"],["k","البلوك","t","diamond_block"]],function(v){return"/setblock "+v.p+" "+v.k});
+build("انتقال",[["p","إلى X Y Z","t","0 100 0"]],function(v){return"/tp @p "+v.p});
+build("عنوان / رسالة",[["m","النوع",["title","subtitle","actionbar","say"]],["t","النص","t","مرحبا"]],function(v){return v.m==="say"?"/say "+v.t:"/titleraw @a "+v.m+' {"rawtext":[{"text":"'+v.t+'"}]}'});
+build("محدد (selector)",[["t","النوع",["p","a","r","e","s"]],["r","المسافة r","n",""],["y","نوع الكائن","t",""],["g","tag","t",""]],function(v){var o=[];if(v.r)o.push("r="+v.r);if(v.y)o.push("type="+v.y);if(v.g)o.push("tag="+v.g);return"@"+v.t+(o.length?"["+o.join(",")+"]":"")});
+build("لوحة نقاط",[["n","الاسم","t","kills"],["d","العرض","t","القتلى"]],function(v){return"/scoreboard objectives add "+v.n+" dummy "+v.d});
+/* ---- حاسبات (٤) ---- */
+build("حاسبة الستاكات",[["n","عدد القطع","n",1000]],function(v){var n=+v.n||0;return Math.floor(n/64)+" ستاك + "+n%64+" قطعة\n"+(n/1728).toFixed(2)+" صندوق شولكر"});
+build("نذر ↔ عادي",[["x","X","n",100],["z","Z","n",100]],function(v){var x=+v.x||0,z=+v.z||0;return"من العادي للنذر: "+Math.floor(x/8)+" , "+Math.floor(z/8)+"\nمن النذر للعادي: "+x*8+" , "+z*8});
+build("الشانك",[["x","X","n",100],["z","Z","n",100]],function(v){var x=+v.x||0,z=+v.z||0;return"الشانك: "+Math.floor(x/16)+" , "+Math.floor(z/16)+"\nبداية الشانك: "+Math.floor(x/16)*16+" , "+Math.floor(z/16)*16});
+build("دائرة (تقريبي)",[["r","نصف القطر","n",10]],function(v){var r=+v.r||0;return"محيطها ≈ "+Math.round(2*Math.PI*r)+" بلوك\nمساحتها ≈ "+Math.round(Math.PI*r*r)+" بلوك"});
+/* ---- أدوات (٦) ---- */
+box("سجل الأوامر المنسوخة",function(b){var r=list(b,"tl_h",function(x){var d=el("div","rw");d.appendChild(el("span","",x));d.appendChild(btn("نسخ",function(e){oc(x,e,"نسخ")}));return d});rh=r;r();b.appendChild(btn("مسح السجل",function(){w("tl_h",[]);r()}))});
+box("ملاحظات",function(b){var t=el("textarea");t.rows=6;t.value=g("tl_n","");t.oninput=function(){w("tl_n",t.value)};b.appendChild(t)});
+box("إحداثياتي المحفوظة",function(b){var n=el("input"),p=el("input");n.placeholder="الاسم (بيتي)";p.placeholder="X Y Z";b.appendChild(n);b.appendChild(p);
+var r=list(b,"tl_c",function(x,i){var d=el("div","rw");d.appendChild(el("span","",x[0]+": "+x[1]));d.appendChild(btn("tp",function(e){cp("/tp @p "+x[1],e,"tp")}));d.appendChild(btn("✕",function(){var a=g("tl_c",[]);a.splice(i,1);w("tl_c",a);r()}));return d});
+b.insertBefore(btn("حفظ",function(){if(!n.value||!p.value)return;var a=g("tl_c",[]);a.push([n.value,p.value]);w("tl_c",a);n.value=p.value="";r()}),b.children[2]);r()});
+box("قائمة مهام",function(b){var i=el("input");i.placeholder="مهمة جديدة";b.appendChild(i);
+var r=list(b,"tl_t",function(x,k){var d=el("div","rw");var c=el("input");c.type="checkbox";c.style.width="auto";c.checked=x[1];c.onchange=function(){var a=g("tl_t",[]);a[k][1]=c.checked;w("tl_t",a)};d.appendChild(c);d.appendChild(el("span","",x[0]));d.appendChild(btn("✕",function(){var a=g("tl_t",[]);a.splice(k,1);w("tl_t",a);r()}));return d});
+b.insertBefore(btn("إضافة",function(){if(!i.value)return;var a=g("tl_t",[]);a.push([i.value,false]);w("tl_t",a);i.value="";r()}),b.children[1]);r()});
+box("ساعة إيقاف",function(b){var o=el("div","cb","00:00.0"),t0=0,iv=0,acc=0;function f(){var m=acc+(t0?Date.now()-t0:0),s=m/1000;o.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+(s%60).toFixed(1).padStart(4,"0")}
+b.appendChild(o);b.appendChild(btn("ابدأ / وقّف",function(){if(t0){acc+=Date.now()-t0;t0=0;clearInterval(iv)}else{t0=Date.now();iv=setInterval(f,100)}f()}));b.appendChild(btn("صفّر",function(){acc=0;t0=0;clearInterval(iv);f()}))});
+box("عشوائي",function(b){var o=el("div","cb","—");b.appendChild(o);[["🪙 عملة",function(){return Math.random()<.5?"صورة":"كتابة"}],["🎲 نرد ٦",function(){return 1+Math.floor(Math.random()*6)}],["🎲 نرد ٢٠",function(){return 1+Math.floor(Math.random()*20)}],["١-١٠٠",function(){return 1+Math.floor(Math.random()*100)}]].forEach(function(x){b.appendChild(btn(x[0],function(){o.textContent=x[1]()}))})});
+/* ---- الإعدادات (٤) ---- */
+function th(v){document.documentElement.setAttribute("data-theme",v)}
+var tv=g("tl_th","");if(tv)th(tv);var zm=g("tl_z",1);document.documentElement.style.zoom=zm;
+box("المظهر والخط",function(b){b.appendChild(btn("☀️ فاتح",function(){w("tl_th","light");th("light")}));b.appendChild(btn("🌙 غامق",function(){w("tl_th","dark");th("dark")}));
+b.appendChild(btn("خط أكبر",function(){zm=Math.min(1.6,zm+.1);w("tl_z",zm);document.documentElement.style.zoom=zm}));b.appendChild(btn("خط أصغر",function(){zm=Math.max(.7,zm-.1);w("tl_z",zm);document.documentElement.style.zoom=zm}))});
+box("نسخ احتياطي",function(b){var t=el("textarea");t.rows=4;t.placeholder="الصق هنا للاسترجاع";
+b.appendChild(btn("نسخ بياناتي",function(e){var o={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^(tl_|gm_)/.test(k)&&k!=="gm_key")o[k]=localStorage.getItem(k)}}catch(x){}oc(JSON.stringify(o),e,"نسخ بياناتي")}));
+b.appendChild(t);b.appendChild(btn("استرجاع",function(e){try{var o=JSON.parse(t.value);for(var k in o)if(/^(tl_|gm_)/.test(k)&&k!=="gm_key")localStorage.setItem(k,o[k]);e.textContent="تم، سكّر وافتح التطبيق"}catch(x){e.textContent="النص غير صحيح"}}));
+b.appendChild(el("label","","مفتاح جيميناي ما ينحفظ بالنسخة لأمانك."))});
+box("مسح كل البيانات",function(b){var n=0;b.appendChild(btn("مسح (اضغط مرتين)",function(e){n++;if(n<2){e.textContent="متأكد؟ اضغط مرة ثانية";return}try{localStorage.clear()}catch(x){}e.textContent="انمسح، سكّر وافتح التطبيق"}))});
+/* ---- ذكاء اصطناعي: ١٠ ميزات ---- */
+var gin=$("gin");
+if(gin){var host=gin.parentNode,ch=el("div");ch.id="gch";host.parentNode.insertBefore(ch,host);
+[["🆕 أمر من وصف","اكتب لي أمر ماينكرافت Bedrock جاهز لهذا الوصف: "],["📖 اشرح أمر","اشرح لي هذا الأمر جزء جزء: "],["🛠 صلّح أمر","هذا الأمر ما يشتغل، صلّحه واشرح الغلط: "],["⛓ سكريبت كامل","اكتب لي سكريبت كوماند بلوك كامل (ترتيب البلوكات ونوع كل بلوك والأوامر) لـ: "],["🔁 Java→Bedrock","حوّل هذا الأمر من Java إلى Bedrock: "],["✂ اختصر","اختصر وحسّن هذا الأمر: "],["🎮 فكرة ميني جيم","اعطني فكرة ميني جيم بالأوامر مع خطوات التنفيذ، الموضوع: "],["❓ اختبرني","اختبرني بخمس أسئلة عن أوامر ماينكرافت، سؤال سؤال وانتظر جوابي."]].forEach(function(x){ch.appendChild(btn(x[0],function(){gin.value=x[1];gin.focus()},""))});
+ch.appendChild(btn("📋 انسخ المحادثة",function(e){var o=[];Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb"),function(m){o.push((m.className.indexOf(" u")>-1?"أنا: ":"جيميناي: ")+m.firstChild.textContent)});oc(o.join("\n\n"),e,"📋 انسخ المحادثة")},""));
+/* كتل الكود في الردود مع زر نسخ */
+function fx(p){if(p.dataset.f)return;p.dataset.f=1;var t=p.textContent;if(t.indexOf("```")<0)return;p.textContent="";var re=/```[\w-]*\n?([\s\S]*?)```/g,i=0,m;
+while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));p.appendChild(d);i=re.lastIndex}
+if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
+new MutationObserver(function(){Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb.m > div:first-child"),fx)}).observe($("gmsgs"),{childList:true,subtree:true})}
 })();
 </script>
 </body></html>
