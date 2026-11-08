@@ -52,11 +52,23 @@ details{border-bottom:1px solid var(--bd);padding:8px 0}summary{font-weight:700;
 .bk{display:flex;gap:6px;margin-bottom:6px}
 .bk button{flex:1;padding:8px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;font-size:.85rem;border-radius:8px}
 .bk .go{background:var(--tx);color:var(--bg);border-color:var(--tx);font-weight:700}
+
+#gm input,#gm textarea{width:100%;padding:10px;border:2px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+#gm .gr{display:flex;gap:8px;margin:8px 0}
+#gm .gr button{flex:1;padding:10px 6px;border:2px solid var(--bd);border-radius:8px;background:var(--sf);color:var(--tx);font:inherit}
+#gsend{background:var(--i)!important;color:#fff!important;border-color:var(--i)!important;font-weight:700}
+#gmsgs{max-height:50vh;overflow:auto;margin:8px 0}
+.gb{padding:10px 12px;margin:8px 0;border-radius:12px;white-space:pre-wrap;word-break:break-word;line-height:1.6}
+.gb.u{background:var(--i);color:#fff;margin-inline-start:24px}
+.gb.m{background:var(--sf);border:1px solid var(--bd);margin-inline-end:24px}
+.gb .ga{display:flex;gap:6px;margin-top:6px}
+.gb .ga button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:6px;padding:4px 10px;font:inherit}
+.gb.e{background:#b3261e;color:#fff}
 </style></head><body>
 <h1>مختبر الكوماند بلوك</h1>
 <p>اختار نوع السكريبت، عدّل الخيارات، وخذ الأوامر جاهزة. اضغط على أي سطر لنسخه.</p>
 <div class="mode" aria-label="وضع النسخ"><button data-m="cb">نسخ للكوماند بلوك</button><button data-m="chat">نسخ للشات (يضيف /)</button></div>
-<nav><button data-t="gen" class="on">المولّد</button><button data-t="lib">المكتبة</button><button data-t="blocks">البلوكات</button><button data-t="learn">دروس</button></nav>
+<nav><button data-t="gen" class="on">المولّد</button><button data-t="lib">المكتبة</button><button data-t="blocks">البلوكات</button><button data-t="learn">دروس</button><button data-t="gm">جيميناي</button></nav>
 
 <section id="gen">
 <div class="card"><label for="cat">نوع السكريبت</label><select id="cat"></select><div id="fields"></div></div>
@@ -87,6 +99,21 @@ details{border-bottom:1px solid var(--bd);padding:8px 0}summary{font-weight:700;
 </section>
 
 <section id="learn" class="hide"></section>
+<section id="gm" class="hide">
+<div class="card">
+<label for="gk">مفتاح Gemini API</label>
+<input id="gk" type="password" placeholder="الصق المفتاح هنا" autocomplete="off">
+<div class="gr"><button id="gks">حفظ المفتاح</button><button id="gkx">حذف المفتاح</button></div>
+<p id="gst">المفتاح يتخزن في جوالك بس. تجيبه من aistudio.google.com/apikey</p>
+<label for="gmd">الموديل</label><select id="gmd"></select>
+</div>
+<div class="card">
+<label for="gcv">المحادثات المحفوظة</label><select id="gcv"></select>
+<div class="gr"><button id="gnew">محادثة جديدة</button><button id="gdel">حذف المحادثة</button></div>
+</div>
+<div id="gmsgs"></div>
+<div class="card"><textarea id="gin" rows="3" placeholder="اكتب رسالتك لجيميناي..."></textarea><div class="gr"><button id="gsend">إرسال</button></div></div>
+</section>
 
 <button id="fab" aria-label="قائمة السكريبتات" title="اسحبها وين ما تريد، واضغط عليها لفتح القائمة">⚡</button>
 <div id="pnl" class="hide" role="dialog" aria-label="قائمة السكريبتات السريعة">
@@ -287,7 +314,7 @@ const L=[["شلون أبدأ؟","جيب بلوك أوامر بـ give @s command
 $("#learn").innerHTML=L.map(([t,d])=>"<details><summary>"+t+"</summary><p>"+d+"</p></details>").join("");
 
 /* التبويبات */
-const TABS=["gen","lib","blocks","learn"];
+const TABS=["gen","lib","blocks","learn","gm"];
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));TABS.forEach(id=>$("#"+id).classList.toggle("hide",id!=b.dataset.t))});
 
 /* الدائرة العايمة والقائمة السريعة */
@@ -353,4 +380,76 @@ if(window.AB){
  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))AB.setFocusable(true)});
  document.addEventListener("focusout",()=>AB.setFocusable(false));
 }
-</script></body></html>
+</script><script>
+(function(){
+var st=document.createElement("style");
+st.textContent="#pk{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px}#pk>div{background:var(--sf,#1f2229);color:var(--tx,#ececec);border:1px solid var(--bd,#33373f);border-radius:12px;max-height:80%;width:100%;max-width:420px;overflow:auto}#pk button{display:block;width:100%;text-align:start;padding:14px 16px;border:0;border-bottom:1px solid var(--bd,#33373f);background:none;color:inherit;font:inherit}#pk button.on{font-weight:700;background:rgba(217,130,43,.25)}";
+document.head.appendChild(st);
+function open(sel){
+var o=document.createElement("div");o.id="pk";
+var b=document.createElement("div");o.appendChild(b);
+Array.prototype.forEach.call(sel.options,function(op,i){
+var x=document.createElement("button");x.type="button";x.textContent=op.text;
+if(i===sel.selectedIndex)x.className="on";
+x.onclick=function(){sel.selectedIndex=i;sel.dispatchEvent(new Event("change",{bubbles:true}));o.remove()};
+b.appendChild(x)});
+o.addEventListener("click",function(e){if(e.target===o)o.remove()});
+document.body.appendChild(o);
+var on=b.querySelector(".on");if(on)on.scrollIntoView({block:"center"});
+}
+document.addEventListener("mousedown",function(e){if(e.target.tagName==="SELECT"){e.preventDefault();e.target.blur();open(e.target)}},true);
+document.addEventListener("touchstart",function(e){if(e.target.tagName==="SELECT"){e.preventDefault();open(e.target)}},{capture:true,passive:false});
+})();
+</script>
+<script>
+(function(){
+var K="gm_key",M="gm_model",C="gm_convs",A="gm_cur",mem={};
+var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار، وإذا طُلب أمر اكتبه جاهز للنسخ.";
+function g(k){try{var v=localStorage.getItem(k);return v===null?mem[k]:v}catch(e){return mem[k]}}
+function w(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
+function $(i){return document.getElementById(i)}
+var convs=[];try{convs=JSON.parse(g(C)||"[]")}catch(e){convs=[]}
+var cur=g(A)||"",busy=false;
+var MODELS=["gemini-3.5-flash","gemini-3.8-flash","gemini-3.1-pro-preview","gemini-2.5-flash","gemini-3.5-flash-lite"];
+function save(){w(C,JSON.stringify(convs));w(A,cur)}
+function conv(){for(var i=0;i<convs.length;i++)if(convs[i].id===cur)return convs[i];return null}
+function mk(){var c={id:String(Date.now()),title:"محادثة جديدة",msgs:[]};convs.unshift(c);cur=c.id;save();return c}
+function msg(t){$("gst").textContent=t}
+function fillModels(){var m=$("gmd");m.innerHTML="";MODELS.forEach(function(x){m.add(new Option(x,x))});m.value=g(M)||MODELS[0];if(m.selectedIndex<0)m.selectedIndex=0}
+function fillConvs(){var c=$("gcv");c.innerHTML="";if(!convs.length)c.add(new Option("لا توجد محادثات",""));convs.forEach(function(x){c.add(new Option(x.title,x.id))});if(cur)c.value=cur}
+function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.lang="ar";speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function bub(cls,t,actions){var d=document.createElement("div");d.className="gb "+cls;var p=document.createElement("div");p.textContent=t;d.appendChild(p);
+if(actions){var a=document.createElement("div");a.className="ga";var b1=document.createElement("button");b1.textContent="نسخ";b1.onclick=function(){cp(t,b1,"نسخ")};var b2=document.createElement("button");b2.textContent="🔊";b2.onclick=function(){speak(t)};a.appendChild(b1);a.appendChild(b2);d.appendChild(a)}
+return d}
+function render(){var box=$("gmsgs");box.innerHTML="";var c=conv();if(c)c.msgs.forEach(function(m){box.appendChild(bub(m.r==="user"?"u":"m",m.t,m.r!=="user"))});box.scrollTop=box.scrollHeight}
+async function send(){
+var key=g(K);if(!key){msg("احفظ المفتاح أول");return}
+var t=$("gin").value.trim();if(!t||busy)return;
+var c=conv()||mk();c.msgs.push({r:"user",t:t});if(c.msgs.length===1)c.title=t.slice(0,30);
+$("gin").value="";save();fillConvs();render();busy=true;
+var wait=bub("m","جيميناي يكتب...",false);$("gmsgs").appendChild(wait);$("gmsgs").scrollTop=$("gmsgs").scrollHeight;
+try{
+var body={systemInstruction:{parts:[{text:SYS}]},contents:c.msgs.map(function(m){return{role:m.r,parts:[{text:m.t}]}})};
+var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(g(M)||MODELS[0])+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)});
+var j=await r.json();
+if(!r.ok)throw new Error((j.error&&j.error.message)||("HTTP "+r.status));
+var cd=j.candidates&&j.candidates[0];
+var txt=cd&&cd.content&&cd.content.parts?cd.content.parts.map(function(p){return p.text||""}).join(""):"";
+if(!txt)throw new Error(j.promptFeedback&&j.promptFeedback.blockReason?("محظور: "+j.promptFeedback.blockReason):"الرد فاضي");
+c.msgs.push({r:"model",t:txt});save();render()
+}catch(e){
+c.msgs.pop();if(!c.msgs.length)c.title="محادثة جديدة";save();fillConvs();render();$("gin").value=t;
+var er=bub("e","خطأ: "+e.message+" (جرّب موديل ثاني من القائمة، أو تأكد من المفتاح والإنترنت)",false);$("gmsgs").appendChild(er);$("gmsgs").scrollTop=$("gmsgs").scrollHeight
+}
+busy=false}
+$("gks").onclick=function(){var v=$("gk").value.trim();if(!v){msg("اكتب المفتاح أول");return}w(K,v);$("gk").value="";msg("انحفظ المفتاح ✅")};
+$("gkx").onclick=function(){w(K,"");$("gk").value="";msg("انحذف المفتاح")};
+$("gmd").onchange=function(){w(M,$("gmd").value)};
+$("gcv").onchange=function(){cur=$("gcv").value;save();render()};
+$("gnew").onclick=function(){mk();fillConvs();render()};
+$("gdel").onclick=function(){if(!cur)return;convs=convs.filter(function(x){return x.id!==cur});cur=convs[0]?convs[0].id:"";save();fillConvs();render()};
+$("gsend").onclick=send;
+fillModels();fillConvs();render();if(g(K))msg("المفتاح محفوظ ✅");
+})();
+</script>
+</body></html>
