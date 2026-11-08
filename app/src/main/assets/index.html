@@ -414,7 +414,7 @@ document.addEventListener("touchstart",function(e){if(e.target.tagName==="SELECT
 <script>
 (function(){
 var K="gm_key",M="gm_model",C="gm_convs",A="gm_cur",mem={};
-var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار، وإذا طُلب أمر اكتبه جاهز للنسخ.";
+var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. إذا طلب المستخدم شي ينفذ باللعبة، اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش. للأمام استعمل ^ ^ ^3. الأوامر المسموحة فقط: summon give effect time weather tp say titleraw gamemode enchant setblock particle playsound. وإذا طلب شي خارج هذي الأوامر اشرح له وما تكتب كتلة كود.";
 function g(k){try{var v=localStorage.getItem(k);return v===null?mem[k]:v}catch(e){return mem[k]}}
 function w(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
 function $(i){return document.getElementById(i)}
@@ -537,8 +537,11 @@ if(gin){var host=gin.parentNode,ch=el("div");ch.id="gch";host.parentNode.insertB
 [["🆕 أمر من وصف","اكتب لي أمر ماينكرافت Bedrock جاهز لهذا الوصف: "],["📖 اشرح أمر","اشرح لي هذا الأمر جزء جزء: "],["🛠 صلّح أمر","هذا الأمر ما يشتغل، صلّحه واشرح الغلط: "],["⛓ سكريبت كامل","اكتب لي سكريبت كوماند بلوك كامل (ترتيب البلوكات ونوع كل بلوك والأوامر) لـ: "],["🔁 Java→Bedrock","حوّل هذا الأمر من Java إلى Bedrock: "],["✂ اختصر","اختصر وحسّن هذا الأمر: "],["🎮 فكرة ميني جيم","اعطني فكرة ميني جيم بالأوامر مع خطوات التنفيذ، الموضوع: "],["❓ اختبرني","اختبرني بخمس أسئلة عن أوامر ماينكرافت، سؤال سؤال وانتظر جوابي."]].forEach(function(x){ch.appendChild(btn(x[0],function(){gin.value=x[1];gin.focus()},""))});
 ch.appendChild(btn("📋 انسخ المحادثة",function(e){var o=[];Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb"),function(m){o.push((m.className.indexOf(" u")>-1?"أنا: ":"جيميناي: ")+m.firstChild.textContent)});oc(o.join("\n\n"),e,"📋 انسخ المحادثة")},""));
 /* كتل الكود في الردود مع زر نسخ */
+function runMc(c,e){var L=c.split("\n").map(function(s){return s.trim()}).filter(Boolean),i=0;
+(function nx(){if(i>=L.length){e.textContent="✅ تم";return}
+fetch("http://127.0.0.1:3000/cmd?c="+encodeURIComponent(L[i++])).then(function(r){return r.text()}).then(function(t){if(t!=="sent"){e.textContent="❌ "+(t==="no-game"?"ماينكرافت مو متصلة":t);return}setTimeout(nx,150)}).catch(function(){e.textContent="❌ الجسر مو شغال"})})()}
 function fx(p){if(p.dataset.f)return;p.dataset.f=1;var t=p.textContent;if(t.indexOf("```")<0)return;p.textContent="";var re=/```[\w-]*\n?([\s\S]*?)```/g,i=0,m;
-while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));p.appendChild(d);i=re.lastIndex}
+while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));(function(cc){d.appendChild(btn("▶ نفّذ باللعبة",function(e){runMc(cc,e)}))})(c);p.appendChild(d);i=re.lastIndex}
 if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
 new MutationObserver(function(){Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb.m > div:first-child"),fx)}).observe($("gmsgs"),{childList:true,subtree:true})}
 })();
