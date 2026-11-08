@@ -42,4 +42,5 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
+    implementation("org.java-websocket:Java-WebSocket:1.5.7")
 }
