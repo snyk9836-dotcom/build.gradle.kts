@@ -542,11 +542,13 @@ ch.appendChild(btn("🔌 اختبار الجسر",function(b){var t="🔌 اخت
 fetch("http://127.0.0.1:3000/").then(function(r){return r.text()}).then(function(x){b.textContent=x==="bridge ok"?"✅ الجسر شغال":"❓ "+x}).catch(function(){fetch("http://127.0.0.1:3000/",{mode:"no-cors"}).then(function(){b.textContent="⚠️ الجسر شغال بس المتصفح يمنع القراءة"}).catch(function(x){b.textContent="❌ "+x.message})});
 setTimeout(function(){b.textContent=t},5000)},""));
 /* كتل الكود في الردود مع زر نسخ */
-function runMc(c,e){var L=c.split("\n").map(function(s){return s.trim()}).filter(Boolean),i=0;
+function runNow(c,e){var L=c.split("\n").map(function(s){return s.trim()}).filter(Boolean),i=0;
 function nx(){if(i>=L.length){e.textContent="✅ تم";return}
 var u="http://127.0.0.1:3000/cmd?c="+encodeURIComponent(L[i++]);
 fetch(u).then(function(r){return r.text()}).then(function(t){if(t!=="sent"){e.textContent="❌ "+(t==="no-game"?"ماينكرافت مو متصلة":t);return}setTimeout(nx,150)}).catch(function(){fetch(u,{mode:"no-cors"}).then(function(){e.textContent="⚠️ أُرسل (ما قدرت أتأكد)";setTimeout(nx,150)}).catch(function(x){e.textContent="❌ التطبيق ما يقدر يوصل للجسر: "+x.message})})}
 nx()}
+function runMc(c,e){var n=(window.__delay==null?6:window.__delay);
+(function t(){if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000)}else{runNow(c,e)}})()}
 window.__runMc=runMc;window.__auto=(g("gm_auto",1)!==0);
 function fx(p){if(p.dataset.f)return;p.dataset.f=1;var t=p.textContent;if(t.indexOf("```")<0)return;p.textContent="";var re=/```[\w-]*\n?([\s\S]*?)```/g,i=0,m;
 while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));(function(cc){d.appendChild(btn("▶ نفّذ باللعبة",function(e){runMc(cc,e)}))})(c);p.appendChild(d);i=re.lastIndex}
