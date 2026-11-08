@@ -29,6 +29,12 @@ import android.webkit.WebView
 import android.widget.LinearLayout
 import android.widget.TextView
 import kotlin.math.abs
+import org.java_websocket.WebSocket
+import org.java_websocket.handshake.ClientHandshake
+import org.java_websocket.server.WebSocketServer
+import java.net.InetSocketAddress
+import java.util.UUID
+import org.json.JSONObject
 
 class OverlayService : Service() {
 
@@ -39,6 +45,8 @@ class OverlayService : Service() {
     private lateinit var bp: WindowManager.LayoutParams
     private lateinit var pp: WindowManager.LayoutParams
     private var open = false
+    private var srv: WebSocketServer? = null
+    @Volatile private var client: WebSocket? = null
     private val ui = Handler(Looper.getMainLooper())
 
     private val dp: Float get() = resources.displayMetrics.density
@@ -50,6 +58,7 @@ class OverlayService : Service() {
         super.onCreate()
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
         startFg()
+        startSrv()
         makePanel()
         makeBubble()
     }
@@ -73,6 +82,7 @@ class OverlayService : Service() {
         try { if (open) wm.removeView(panel) } catch (_: Exception) {}
         try { wm.removeView(bubble) } catch (_: Exception) {}
         try { web.destroy() } catch (_: Exception) {}
+        try { srv?.stop(100) } catch (_: Exception) {}
         super.onDestroy()
     }
 
@@ -275,8 +285,53 @@ class OverlayService : Service() {
         }
     }
 
+    // ---------- سيرفر الاتصال بماينكرافت ----------
+    private fun startSrv() {
+        try {
+            srv = object : WebSocketServer(InetSocketAddress("127.0.0.1", 8080)) {
+                override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) { client = conn }
+                override fun onClose(conn: WebSocket?, code: Int, reason: String?, remote: Boolean) { if (client == conn) client = null }
+                override fun onMessage(conn: WebSocket?, message: String?) {}
+                override fun onError(conn: WebSocket?, ex: Exception?) {}
+                override fun onStart() {}
+            }.also { it.isReuseAddr = true; it.start() }
+        } catch (_: Exception) {}
+    }
+
+    private fun setFocus(on: Boolean) {
+        pp.flags = if (on) pp.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+        else pp.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        if (open) wm.updateViewLayout(panel, pp)
+    }
+
     // ---------- جسر بين الصفحة والتطبيق ----------
     inner class Bridge {
+        @JavascriptInterface
+        fun run(cmd: String): String {
+            val c = client
+            if (c == null || !c.isOpen) return "no-game"
+            val o = JSONObject()
+                .put("header", JSONObject().put("version", 1).put("requestId", UUID.randomUUID().toString())
+                    .put("messageType", "commandRequest").put("messagePurpose", "commandRequest"))
+                .put("body", JSONObject().put("version", 1).put("commandLine", cmd.trim().removePrefix("/"))
+                    .put("origin", JSONObject().put("type", "player")))
+            c.send(o.toString())
+            return "sent"
+        }
+
+        @JavascriptInterface
+        fun paste() {
+            ui.post {
+                setFocus(true)
+                ui.postDelayed({
+                    val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val t = cm.primaryClip?.getItemAt(0)?.coerceToText(this@OverlayService)?.toString() ?: ""
+                    setFocus(false)
+                    web.evaluateJavascript("window.__pasted(" + JSONObject.quote(t) + ")", null)
+                }, 250)
+            }
+        }
+
         @JavascriptInterface
         fun copy(text: String) {
             val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
