@@ -387,7 +387,7 @@ place();
 if(window.AB){
  fab.style.display="none";pnl.style.display="none";
  document.body.style.paddingTop="8px";
- document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))AB.setFocusable(true)});
+ document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)&&!e.target.dataset.nokb)AB.setFocusable(true)});
  document.addEventListener("focusout",()=>AB.setFocusable(false));
 }
 </script><script>
@@ -474,7 +474,7 @@ function btn(t,f,c){var b=el("button",c||"tbt",t);b.type="button";b.onclick=func
 var T=$("tl");
 /* ---- سجل النسخ ---- */
 var oc=window.cp,rh=function(){};
-window.cp=function(t,e,b){try{if(typeof t==="string"&&t.length<300){var h=g("tl_h",[]);if(h[0]!==t){h.unshift(t);w("tl_h",h.slice(0,50));rh()}}}catch(x){}return oc(t,e,b)};
+window.cp=function(t,e,b){try{if(typeof t==="string"&&t.length<3000){var h=g("tl_h",[]);if(h[0]!==t){h.unshift(t);w("tl_h",h.slice(0,200));rh()}}}catch(x){}if(window.__direct&&typeof t==="string"&&t.charAt(0)==="/"&&window.AB&&AB.run){var r=AB.run(t);if(window.toast)toast(r==="sent"?"⚡ نُفّذ: "+t.slice(0,40):r==="no-game"?"❌ ماينكرافت مو متصلة. اكتب بالشات: /connect ws://127.0.0.1:8080":"❌ "+r)}return oc(t,e,b)};
 /* ---- مساعدات البناء ---- */
 var sr=el("input");sr.id="tls";sr.placeholder="🔍 ابحث في الأدوات";T.appendChild(sr);
 sr.oninput=function(){var q=sr.value.trim();Array.prototype.forEach.call(T.querySelectorAll("details"),function(d){d.style.display=!q||d.firstChild.textContent.indexOf(q)>-1?"":"none"})};
@@ -543,17 +543,55 @@ fetch("http://127.0.0.1:3000/").then(function(r){return r.text()}).then(function
 setTimeout(function(){b.textContent=t},5000)},""));
 /* كتل الكود في الردود مع زر نسخ */
 function runNow(c,e){var L=c.split("\n").map(function(s){return s.trim()}).filter(Boolean),i=0;
-function nx(){if(i>=L.length){e.textContent="✅ تم";return}
-var u="http://127.0.0.1:3000/cmd?c="+encodeURIComponent(L[i++]);
-fetch(u).then(function(r){return r.text()}).then(function(t){if(t!=="sent"){e.textContent="❌ "+(t==="no-game"?"ماينكرافت مو متصلة":t);return}setTimeout(nx,150)}).catch(function(){fetch(u,{mode:"no-cors"}).then(function(){e.textContent="⚠️ أُرسل (ما قدرت أتأكد)";setTimeout(nx,150)}).catch(function(x){e.textContent="❌ التطبيق ما يقدر يوصل للجسر: "+x.message})})}
-nx()}
-function runMc(c,e){var n=(window.__delay==null?6:window.__delay);
+(function nx(){if(i>=L.length){e.textContent="✅ تم";return}
+var r=window.AB&&AB.run?AB.run(L[i++]):"التطبيق قديم";
+if(r!=="sent"){e.textContent="❌ "+(r==="no-game"?"اكتب بماينكرافت: /connect ws://127.0.0.1:8080":r);return}
+setTimeout(nx,150)})()}
+function runMc(c,e){var n=(window.__delay==null?3:window.__delay);
 (function t(){if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000)}else{runNow(c,e)}})()}
-window.__runMc=runMc;window.__auto=(g("gm_auto",1)!==0);
+window.__runMc=runMc;window.__runNow=runNow;window.__auto=(g("gm_auto",1)!==0);
 function fx(p){if(p.dataset.f)return;p.dataset.f=1;var t=p.textContent;if(t.indexOf("```")<0)return;p.textContent="";var re=/```[\w-]*\n?([\s\S]*?)```/g,i=0,m;
 while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));(function(cc){d.appendChild(btn("▶ نفّذ باللعبة",function(e){runMc(cc,e)}))})(c);p.appendChild(d);i=re.lastIndex}
 if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
 new MutationObserver(function(){Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb.m > div:first-child"),fx)}).observe($("gmsgs"),{childList:true,subtree:true})}
+})();
+</script>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},gin=$("gin");if(!gin)return;
+function ls(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+window.__direct=ls("gm_direct",1)!==0;
+gin.dataset.nokb="1";gin.readOnly=true;gin.setAttribute("inputmode","none");
+var st=document.createElement("style");st.textContent="#kb{position:fixed;left:8px;top:60vh;width:min(96vw,430px);transform-origin:0 0;background:#1f2229;color:#ececec;border:1px solid #33373f;border-radius:12px;z-index:99998;direction:ltr;box-shadow:0 8px 28px rgba(0,0,0,.5);user-select:none;-webkit-user-select:none}#kb.hide{display:none}#kbh{display:flex;gap:3px;padding:4px;touch-action:none;background:#2a2e37;border-radius:12px 12px 0 0;align-items:center}#kbh b{flex:1;font-size:12px;text-align:center}#kb button{border:0;border-radius:7px;background:#3a3f4b;color:#ececec;font:15px Cairo,system-ui;padding:9px 0;min-width:0}#kbh button{padding:5px 9px}#kb .r{display:flex;gap:3px;padding:2px 4px}#kb .r button{flex:1}#kb .w{flex:4!important}#kb .a{background:#d9822b}#kbl{max-height:150px;overflow:auto;padding:4px;direction:rtl}#kbl div{display:flex;gap:4px;margin:2px 0;font:12px ui-monospace,monospace;direction:ltr}#kbl span{flex:1;background:#14161b;border-radius:6px;padding:6px;word-break:break-all}#kbs{width:calc(100% - 8px);margin:4px;padding:6px;border-radius:6px;border:1px solid #33373f;background:#14161b;color:#ececec}#tst{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000d;color:#fff;padding:8px 14px;border-radius:20px;z-index:100000;font-size:13px;max-width:90vw}#goback{display:none;position:fixed;top:calc(env(safe-area-inset-top,0px) + 6px);left:8px;z-index:99997;padding:8px 14px;border-radius:20px;border:0;background:#d9822b;color:#fff;font:14px Cairo}body.go #goback{display:block}body.go>*:not(#gm):not(#kb):not(#goback):not(#tst):not(script):not(style):not(#fab):not(#pnl){display:none!important}body.go #gm{display:block!important}body.go #gmsgs{max-height:none}body.go{padding-top:44px}";document.head.appendChild(st);
+var tt=0;window.toast=function(m){var t=$("tst");if(!t){t=document.createElement("div");t.id="tst";document.body.appendChild(t)}t.style.display="block";t.textContent=m;clearTimeout(tt);tt=setTimeout(function(){t.style.display="none"},3000)};
+var M={ar:["ضصثقفغعهخحج","شسيبلاتنمكط","ئءؤرىةوزظ"],en:["qwertyuiop","asdfghjkl","zxcvbnm"],sy:["1234567890","/~^@[]{}()","\"'.,:;_-+=!?"]},mode="ar",z=ls("kb_z",1),showH=false,q="";
+var kb=document.createElement("div");kb.id="kb";kb.className="hide";document.body.appendChild(kb);
+function B(t,f,c){var b=document.createElement("button");b.textContent=t;if(c)b.className=c;b.onclick=f;return b}
+function ins(t){var a=gin.selectionStart==null?gin.value.length:gin.selectionStart,e=gin.selectionEnd==null?a:gin.selectionEnd;gin.value=gin.value.slice(0,a)+t+gin.value.slice(e);gin.setSelectionRange(a+t.length,a+t.length)}
+function bs(){var a=gin.selectionStart||0,e=gin.selectionEnd||0;if(a===e&&a>0)a--;gin.value=gin.value.slice(0,a)+gin.value.slice(e);gin.setSelectionRange(a,a)}
+function hist(t){var h=ls("tl_h",[]);if(h[0]!==t){h.unshift(t);ss("tl_h",h.slice(0,200))}}
+window.__pasted=function(t){if(t){ins(t);hist(t)}else toast("الحافظة فاضية")};
+function draw(){kb.innerHTML="";kb.style.transform="scale("+z+")";
+var h=document.createElement("div");h.id="kbh";h.appendChild(B("➖",function(){z=Math.max(.6,z-.1);ss("kb_z",z);draw()}));h.appendChild(B("➕",function(){z=Math.min(1.2,z+.1);ss("kb_z",z);draw()}));var t=document.createElement("b");t.textContent="⌨ اسحب من هنا";h.appendChild(t);
+h.appendChild(B("📋",function(){showH=!showH;draw()}));h.appendChild(B(window.__direct?"⚡ شغّال":"⚡ مطفي",function(){window.__direct=!window.__direct;ss("gm_direct",window.__direct?1:0);draw()}));h.appendChild(B("✕",function(){kb.className="hide"}));kb.appendChild(h);
+var ox,oy,px,py,dr=false;h.onpointerdown=function(e){if(e.target.tagName==="BUTTON")return;dr=true;ox=e.clientX;oy=e.clientY;px=kb.offsetLeft;py=kb.offsetTop;h.setPointerCapture(e.pointerId)};h.onpointermove=function(e){if(!dr)return;kb.style.left=Math.max(0,px+e.clientX-ox)+"px";kb.style.top=Math.max(0,py+e.clientY-oy)+"px"};h.onpointerup=function(){dr=false};
+if(showH){var s=document.createElement("input");s.id="kbs";s.placeholder="بحث بسجل النسخ";s.value=q;s.dataset.nokb="1";s.oninput=function(){q=s.value;lst()};kb.appendChild(s);var l=document.createElement("div");l.id="kbl";kb.appendChild(l);lst()}
+M[mode].forEach(function(r){var d=document.createElement("div");d.className="r";r.split("").forEach(function(c){d.appendChild(B(c,function(){ins(c)}))});kb.appendChild(d)});
+var d=document.createElement("div");d.className="r";d.appendChild(B("⇄ "+({ar:"ع",en:"EN",sy:"#"})[mode],function(){mode=mode==="ar"?"en":mode==="en"?"sy":"ar";draw()}));d.appendChild(B("⌫",bs));d.appendChild(B("␣",function(){ins(" ")},"w"));d.appendChild(B("↵",function(){ins("\n")}));kb.appendChild(d);
+d=document.createElement("div");d.className="r";
+d.appendChild(B("📥 لصق",function(){if(window.AB&&AB.paste)AB.paste();else toast("حدّث التطبيق")}));
+d.appendChild(B("📄 نسخ",function(){var v=gin.value;if(v){if(window.AB)AB.copy(v);hist(v);toast("تم النسخ")}}));
+d.appendChild(B("✂ مسح",function(){gin.value=""}));
+d.appendChild(B("▶ نفّذ",function(){if(gin.value.trim())window.__runNow(gin.value,{set textContent(v){toast(v)}})},"a"));
+d.appendChild(B("➤ أرسل",function(){$("gsend").click()},"a"));kb.appendChild(d)}
+function lst(){var l=$("kbl");l.innerHTML="";var h=ls("tl_h",[]);if(!h.length)l.textContent="السجل فاضي";h.forEach(function(x,i){if(q&&x.indexOf(q)<0)return;var d=document.createElement("div"),sp=document.createElement("span");sp.textContent=x.slice(0,120);sp.onclick=function(){ins(x)};d.appendChild(sp);d.appendChild(B("✕",function(){var a=ls("tl_h",[]);a.splice(i,1);ss("tl_h",a);lst()}));l.appendChild(d)})}
+function show(){draw();kb.className="";}
+gin.addEventListener("click",show);
+var nv=document.querySelector("nav");
+if(nv){var gb=document.createElement("button");gb.textContent="🤖";gb.title="وضع جيميناي";gb.onclick=function(){var b=nv.querySelector("[data-t=gm]");if(b)b.click();document.body.classList.add("go")};nv.appendChild(gb)}
+var bk=document.createElement("button");bk.id="goback";bk.textContent="↩ رجوع";bk.onclick=function(){document.body.classList.remove("go");var b=nv&&nv.querySelector("[data-t=gen]");if(b)b.click()};document.body.appendChild(bk);
 })();
 </script>
 </body></html>
