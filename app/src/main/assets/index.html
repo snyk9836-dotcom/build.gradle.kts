@@ -414,7 +414,8 @@ document.addEventListener("touchstart",function(e){if(e.target.tagName==="SELECT
 <script>
 (function(){
 var K="gm_key",M="gm_model",C="gm_convs",A="gm_cur",mem={};
-var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. إذا طلب المستخدم شي ينفذ باللعبة، اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش. للأمام استعمل ^ ^ ^3. الأوامر المسموحة فقط: summon give effect time weather tp say titleraw gamemode enchant setblock particle playsound. وإذا طلب شي خارج هذي الأوامر اشرح له وما تكتب كتلة كود.";
+var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. عندك صلاحية كاملة لكل أوامر Bedrock بدون أي قائمة محظورة: fill و clone و setblock و execute و structure و scoreboard و tag و kill و give و summon و tp و effect و gamemode و time و weather و particle و playsound و titleraw و enchant و replaceitem و camera وغيرها. إذا طلب المستخدم شي ينفذ باللعبة اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش وبدون شرح داخل الكتلة. استعمل صياغة Bedrock فقط (مو Java). المواقع: بنهاية التعليمات تلكى موقع اللاعب الحقيقي واتجاهه. للبناء والتعديل استعمل إحداثيات رقمية مطلقة تحسبها من موقعه ما لم يحدد المستخدم مكان ثاني (إحداثيات، أو اسم مكان محفوظ، أو إزاحة مثل 20 بلوك شرق)، وإذا حدد مكان استعمله بدل موقع اللاعب. الاتجاهات: شرق x موجب، غرب x سالب، جنوب z موجب، شمال z سالب. الأمر fill و clone حدهم 32768 بلوك للأمر الواحد، فقسّم البناء الكبير لعدة أوامر. إذا الأمر مدمر بشكل كبير (مثل kill @e أو fill ضخم) نبّه المستخدم بسطر قبل الكتلة. إذا طلب المستخدم يحفظ مكان باسم، اكتب بنهاية ردك سطر [[SAVE:الاسم]] لحفظ موقعه الحالي، أو [[SAVE:الاسم|x y z]] لإحداثيات محددة.";
+
 function g(k){try{var v=localStorage.getItem(k);return v===null?mem[k]:v}catch(e){return mem[k]}}
 function w(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
 function $(i){return document.getElementById(i)}
@@ -432,6 +433,18 @@ function bub(cls,t,actions){var d=document.createElement("div");d.className="gb 
 if(actions){var a=document.createElement("div");a.className="ga";var b1=document.createElement("button");b1.textContent="نسخ";b1.onclick=function(){cp(t,b1,"نسخ")};var b2=document.createElement("button");b2.textContent="🔊";b2.onclick=function(){speak(t)};a.appendChild(b1);a.appendChild(b2);d.appendChild(a)}
 return d}
 function render(){var box=$("gmsgs");box.innerHTML="";var c=conv();if(c)c.msgs.forEach(function(m){box.appendChild(bub(m.r==="user"?"u":"m",m.t,m.r!=="user"))});box.scrollTop=box.scrollHeight}
+function places(){try{return JSON.parse(g("gm_places")||"{}")}catch(e){return {}}}
+function sv(t){return t.replace(/\[\[SAVE:([^\]|]+)(?:\|([^\]]+))?\]\]/g,function(m,n,xyz){var pl=places(),c=null;n=n.trim();
+if(xyz){var a=xyz.trim().split(/[\s,]+/).map(Number);if(a.length>=3&&a.every(function(v){return isFinite(v)}))c={x:a[0],y:a[1],z:a[2]}}else if(window.__pos){c={x:Math.floor(window.__pos.x),y:Math.floor(window.__pos.y),z:Math.floor(window.__pos.z)}}
+if(!c)return "(ما قدرت أحفظ المكان: "+n+")";pl[n]=c;w("gm_places",JSON.stringify(pl));return "📍 انحفظ المكان: "+n+" ("+c.x+" "+c.y+" "+c.z+")"})}
+async function ctx(){var o="\n\n[معلومات حية]\n";var p=null;
+try{if(window.AB&&AB.queryPos&&AB.queryPos()==="sent"){for(var i=0;i<15&&!p;i++){await new Promise(function(r){setTimeout(r,100)});var s=AB.pos();if(s){try{p=JSON.parse(s)}catch(e){}}}}}catch(e){}
+if(p){window.__pos=p;var y=((p.yRot%360)+360)%360,d=["جنوب (z موجب)","غرب (x سالب)","شمال (z سالب)","شرق (x موجب)"][Math.round(y/90)%4];
+o+="موقع اللاعب الحالي: x="+Math.floor(p.x)+" y="+Math.floor(p.y)+" z="+Math.floor(p.z)+" | البعد: "+(["الأوفرورلد","النذر","الإند"][p.dim]||p.dim)+" | يطالع باتجاه: "+d+"\n"}
+else if(window.__pos){var q=window.__pos;o+="آخر موقع معروف للاعب (قد يكون قديم): x="+Math.floor(q.x)+" y="+Math.floor(q.y)+" z="+Math.floor(q.z)+"\n"}
+else o+="موقع اللاعب غير معروف (ماينكرافت مو متصلة). استعمل إحداثيات نسبية ~ ~ ~ أو ^ ^ ^ وانبّه المستخدم.\n";
+var pl=places(),k=Object.keys(pl);if(k.length)o+="الأماكن المحفوظة: "+k.map(function(n){return n+"="+pl[n].x+" "+pl[n].y+" "+pl[n].z}).join("، ")+"\n";
+return o}
 async function send(){
 var key=g(K);if(!key){msg("احفظ المفتاح أول");return}
 var t=$("gin").value.trim();if(!t||busy)return;
@@ -439,14 +452,14 @@ var c=conv()||mk();c.msgs.push({r:"user",t:t});if(c.msgs.length===1)c.title=t.sl
 $("gin").value="";save();fillConvs();render();busy=true;
 var wait=bub("m","جيميناي يكتب...",false);$("gmsgs").appendChild(wait);$("gmsgs").scrollTop=$("gmsgs").scrollHeight;
 try{
-var body={systemInstruction:{parts:[{text:SYS}]},contents:c.msgs.map(function(m){return{role:m.r,parts:[{text:m.t}]}})};
+var body={systemInstruction:{parts:[{text:SYS+(await ctx())}]},contents:c.msgs.map(function(m){return{role:m.r,parts:[{text:m.t}]}})};
 var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(g(M)||MODELS[0])+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)});
 var j=await r.json();
 if(!r.ok)throw new Error((j.error&&j.error.message)||("HTTP "+r.status));
 var cd=j.candidates&&j.candidates[0];
 var txt=cd&&cd.content&&cd.content.parts?cd.content.parts.map(function(p){return p.text||""}).join(""):"";
 if(!txt)throw new Error(j.promptFeedback&&j.promptFeedback.blockReason?("محظور: "+j.promptFeedback.blockReason):"الرد فاضي");
-c.msgs.push({r:"model",t:txt});save();render()
+txt=sv(txt);c.msgs.push({r:"model",t:txt});save();render()
 if(window.__auto!==false&&window.__runMc){var rx=/```[\w-]*\n?([\s\S]*?)```/g,mm,st={set textContent(v){msg(v)}};while((mm=rx.exec(txt))){window.__runMc(mm[1].trim(),st)}}
 }catch(e){
 c.msgs.pop();if(!c.msgs.length)c.title="محادثة جديدة";save();fillConvs();render();$("gin").value=t;
