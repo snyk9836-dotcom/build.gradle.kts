@@ -27,7 +27,6 @@ import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.LinearLayout
-import android.widget.Toast
 import android.widget.TextView
 import kotlin.math.abs
 import org.java_websocket.WebSocket
@@ -49,8 +48,6 @@ class OverlayService : Service() {
     private var srv: WebSocketServer? = null
     @Volatile private var client: WebSocket? = null
     private val ui = Handler(Looper.getMainLooper())
-    private var bubbleBg: GradientDrawable? = null
-    private val connectCmd = "/connect ws://127.0.0.1:8080"
 
     private val dp: Float get() = resources.displayMetrics.density
     private val bubbleSize: Int get() = (56 * dp).toInt()
@@ -60,42 +57,10 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        if (!android.provider.Settings.canDrawOverlays(this)) {
-            toast("فعّل «العرض فوق التطبيقات الأخرى» أول")
-            stopSelf()
-            return
-        }
         startFg()
         startSrv()
         makePanel()
-        try {
-            makeBubble()
-        } catch (e: Exception) {
-            toast("ما كدرت أرسم الدائرة")
-            stopSelf()
-            return
-        }
-        copyConnect(false)
-    }
-
-    private fun toast(t: String) {
-        ui.post { Toast.makeText(this, t, Toast.LENGTH_LONG).show() }
-    }
-
-    // ينسخ أمر الربط حتى تلصقه بشات ماينكرافت
-    private fun copyConnect(showToast: Boolean) {
-        try {
-            val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            cm.setPrimaryClip(ClipData.newPlainText("connect", connectCmd))
-            if (showToast) toast("اننسخ أمر الربط، الصقه بشات ماينكرافت")
-        } catch (_: Exception) {}
-    }
-
-    // البرتقالي = بانتظار ماينكرافت، الأخضر = متصل
-    private fun setState(connected: Boolean) {
-        ui.post {
-            bubbleBg?.setColor(if (connected) 0xFF3F9A62.toInt() else 0xFFD9822B.toInt())
-        }
+        makeBubble()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -108,17 +73,16 @@ class OverlayService : Service() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        try {
-            clampBubble()
-            wm.updateViewLayout(bubble, bp)
-            if (open) placePanel(false)
-        } catch (_: Exception) {}
+        clampBubble()
+        wm.updateViewLayout(bubble, bp)
+        if (open) placePanel(false)
     }
 
     override fun onDestroy() {
         try { if (open) wm.removeView(panel) } catch (_: Exception) {}
         try { wm.removeView(bubble) } catch (_: Exception) {}
         try { web.destroy() } catch (_: Exception) {}
+        ui.removeCallbacks(keepAlive)
         try { srv?.stop(100) } catch (_: Exception) {}
         super.onDestroy()
     }
@@ -171,13 +135,11 @@ class OverlayService : Service() {
             textSize = 24f
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
-            val bg = GradientDrawable().apply {
+            background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setColor(0xFFD9822B.toInt())
                 setStroke((3 * dp).toInt(), Color.WHITE)
             }
-            bubbleBg = bg
-            background = bg
             elevation = 8 * dp
         }
         val (sw, sh) = screen()
@@ -259,13 +221,6 @@ class OverlayService : Service() {
             setPadding((12 * dp).toInt(), (10 * dp).toInt(), (12 * dp).toInt(), (10 * dp).toInt())
             setOnClickListener { stopSelf() }
         }
-        val link = TextView(this).apply {
-            text = "ربط"
-            setTextColor(0xFF9BE3B4.toInt())
-            textSize = 14f
-            setPadding((12 * dp).toInt(), (10 * dp).toInt(), (12 * dp).toInt(), (10 * dp).toInt())
-            setOnClickListener { copyConnect(true) }
-        }
         val close = TextView(this).apply {
             text = "✕"
             setTextColor(Color.WHITE)
@@ -274,7 +229,6 @@ class OverlayService : Service() {
             setOnClickListener { toggle() }
         }
         bar.addView(title, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        bar.addView(link)
         bar.addView(quit)
         bar.addView(close)
 
@@ -327,43 +281,66 @@ class OverlayService : Service() {
             open = false
         } else {
             placePanel(true)
-            try {
-                wm.addView(panel, pp)
-                open = true
-            } catch (e: Exception) {
-                toast("ما كدرت أفتح القائمة")
-            }
+            wm.addView(panel, pp)
+            open = true
         }
     }
 
     // ---------- سيرفر الاتصال بماينكرافت ----------
+    private fun toast(m: String) {
+        ui.post { try { android.widget.Toast.makeText(this, m, android.widget.Toast.LENGTH_LONG).show() } catch (_: Exception) {} }
+    }
+
+    private fun paintBubble(connected: Boolean) {
+        ui.post {
+            try {
+                (bubble.background as? GradientDrawable)?.setColor(
+                    if (connected) 0xFF2E9E5B.toInt() else 0xFFD9822B.toInt()
+                )
+            } catch (_: Exception) {}
+        }
+    }
+
     private fun startSrv() {
         try {
             srv = object : WebSocketServer(InetSocketAddress("127.0.0.1", 8080)) {
                 override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
-                    // صفحات المتصفح ترسل Origin، ماينكرافت ما يرسله: نرفض المتصفح
-                    val origin = try { handshake?.getFieldValue("Origin") ?: "" } catch (_: Exception) { "" }
-                    if (origin.startsWith("http")) { conn?.close(); return }
+                    // اتصال جديد يحل محل القديم بدون ما يسكّر الجديد بالغلط
+                    val old = client
                     client = conn
-                    setState(true)
+                    if (old != null && old != conn) try { old.close() } catch (_: Exception) {}
+                    paintBubble(true)
                 }
                 override fun onClose(conn: WebSocket?, code: Int, reason: String?, remote: Boolean) {
-                    if (client == conn) { client = null; setState(false) }
+                    if (client == conn) {
+                        client = null
+                        paintBubble(false)
+                        toast("انقطع الاتصال (code=$code، " + (if (remote) "من ماينكرافت" else "من التطبيق") + ")")
+                    }
                 }
                 override fun onMessage(conn: WebSocket?, message: String?) {}
                 override fun onError(conn: WebSocket?, ex: Exception?) {
-                    if (conn == null) toast("المنفذ 8080 مشغول أو ما اشتغل السيرفر، اقفل التطبيق وافتحه من جديد")
+                    if (conn == null) toast("خطأ بالسيرفر: " + (ex?.message ?: "غير معروف"))
                 }
-                override fun onStart() {}
-            }.also {
-                it.isReuseAddr = true
-                it.connectionLostTimeout = 15
-                it.start()
-            }
+                override fun onStart() {
+                    // لا نقطع الاتصال بسبب غياب الـ pong (ماينكرافت يتوقف لما تفتح القائمة)
+                    connectionLostTimeout = 0
+                }
+            }.also { it.isReuseAddr = true; it.connectionLostTimeout = 0; it.start() }
+            startKeepAlive()
         } catch (e: Exception) {
-            toast("ما اشتغل السيرفر: " + (e.message ?: ""))
+            toast("السيرفر ما اشتغل: " + (e.message ?: ""))
         }
     }
+
+    // نبض خفيف كل 20 ثانية حتى ما يعتبر ماينكرافت الاتصال خامل
+    private val keepAlive = object : Runnable {
+        override fun run() {
+            try { client?.takeIf { it.isOpen }?.sendPing() } catch (_: Exception) {}
+            ui.postDelayed(this, 20_000)
+        }
+    }
+    private fun startKeepAlive() { ui.removeCallbacks(keepAlive); ui.postDelayed(keepAlive, 20_000) }
 
     private fun setFocus(on: Boolean) {
         pp.flags = if (on) pp.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
@@ -385,9 +362,6 @@ class OverlayService : Service() {
             c.send(o.toString())
             return "sent"
         }
-
-        @JavascriptInterface
-        fun status(): String = if (client?.isOpen == true) "connected" else "waiting"
 
         @JavascriptInterface
         fun paste() {
@@ -418,6 +392,16 @@ class OverlayService : Service() {
                     pp.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 }
                 if (open) wm.updateViewLayout(panel, pp)
+                if (on && open) {
+                    // نطلّع كيبورد الهاتف بعد ما النافذة تاخذ التركيز
+                    ui.postDelayed({
+                        try {
+                            web.requestFocus()
+                            val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                            imm.showSoftInput(web, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+                        } catch (_: Exception) {}
+                    }, 120)
+                }
             }
         }
     }
