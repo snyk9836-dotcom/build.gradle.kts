@@ -27,6 +27,7 @@ import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.LinearLayout
+import android.widget.Toast
 import android.widget.TextView
 import kotlin.math.abs
 import org.java_websocket.WebSocket
@@ -48,6 +49,8 @@ class OverlayService : Service() {
     private var srv: WebSocketServer? = null
     @Volatile private var client: WebSocket? = null
     private val ui = Handler(Looper.getMainLooper())
+    private var bubbleBg: GradientDrawable? = null
+    private val connectCmd = "/connect ws://127.0.0.1:8080"
 
     private val dp: Float get() = resources.displayMetrics.density
     private val bubbleSize: Int get() = (56 * dp).toInt()
@@ -57,10 +60,42 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        if (!android.provider.Settings.canDrawOverlays(this)) {
+            toast("فعّل «العرض فوق التطبيقات الأخرى» أول")
+            stopSelf()
+            return
+        }
         startFg()
         startSrv()
         makePanel()
-        makeBubble()
+        try {
+            makeBubble()
+        } catch (e: Exception) {
+            toast("ما كدرت أرسم الدائرة")
+            stopSelf()
+            return
+        }
+        copyConnect(false)
+    }
+
+    private fun toast(t: String) {
+        ui.post { Toast.makeText(this, t, Toast.LENGTH_LONG).show() }
+    }
+
+    // ينسخ أمر الربط حتى تلصقه بشات ماينكرافت
+    private fun copyConnect(showToast: Boolean) {
+        try {
+            val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            cm.setPrimaryClip(ClipData.newPlainText("connect", connectCmd))
+            if (showToast) toast("اننسخ أمر الربط، الصقه بشات ماينكرافت")
+        } catch (_: Exception) {}
+    }
+
+    // البرتقالي = بانتظار ماينكرافت، الأخضر = متصل
+    private fun setState(connected: Boolean) {
+        ui.post {
+            bubbleBg?.setColor(if (connected) 0xFF3F9A62.toInt() else 0xFFD9822B.toInt())
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -73,9 +108,11 @@ class OverlayService : Service() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        clampBubble()
-        wm.updateViewLayout(bubble, bp)
-        if (open) placePanel(false)
+        try {
+            clampBubble()
+            wm.updateViewLayout(bubble, bp)
+            if (open) placePanel(false)
+        } catch (_: Exception) {}
     }
 
     override fun onDestroy() {
@@ -134,11 +171,13 @@ class OverlayService : Service() {
             textSize = 24f
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
-            background = GradientDrawable().apply {
+            val bg = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setColor(0xFFD9822B.toInt())
                 setStroke((3 * dp).toInt(), Color.WHITE)
             }
+            bubbleBg = bg
+            background = bg
             elevation = 8 * dp
         }
         val (sw, sh) = screen()
@@ -220,6 +259,13 @@ class OverlayService : Service() {
             setPadding((12 * dp).toInt(), (10 * dp).toInt(), (12 * dp).toInt(), (10 * dp).toInt())
             setOnClickListener { stopSelf() }
         }
+        val link = TextView(this).apply {
+            text = "ربط"
+            setTextColor(0xFF9BE3B4.toInt())
+            textSize = 14f
+            setPadding((12 * dp).toInt(), (10 * dp).toInt(), (12 * dp).toInt(), (10 * dp).toInt())
+            setOnClickListener { copyConnect(true) }
+        }
         val close = TextView(this).apply {
             text = "✕"
             setTextColor(Color.WHITE)
@@ -228,6 +274,7 @@ class OverlayService : Service() {
             setOnClickListener { toggle() }
         }
         bar.addView(title, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        bar.addView(link)
         bar.addView(quit)
         bar.addView(close)
 
@@ -280,8 +327,12 @@ class OverlayService : Service() {
             open = false
         } else {
             placePanel(true)
-            wm.addView(panel, pp)
-            open = true
+            try {
+                wm.addView(panel, pp)
+                open = true
+            } catch (e: Exception) {
+                toast("ما كدرت أفتح القائمة")
+            }
         }
     }
 
@@ -289,13 +340,29 @@ class OverlayService : Service() {
     private fun startSrv() {
         try {
             srv = object : WebSocketServer(InetSocketAddress("127.0.0.1", 8080)) {
-                override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) { client = conn }
-                override fun onClose(conn: WebSocket?, code: Int, reason: String?, remote: Boolean) { if (client == conn) client = null }
+                override fun onOpen(conn: WebSocket?, handshake: ClientHandshake?) {
+                    // صفحات المتصفح ترسل Origin، ماينكرافت ما يرسله: نرفض المتصفح
+                    val origin = try { handshake?.getFieldValue("Origin") ?: "" } catch (_: Exception) { "" }
+                    if (origin.startsWith("http")) { conn?.close(); return }
+                    client = conn
+                    setState(true)
+                }
+                override fun onClose(conn: WebSocket?, code: Int, reason: String?, remote: Boolean) {
+                    if (client == conn) { client = null; setState(false) }
+                }
                 override fun onMessage(conn: WebSocket?, message: String?) {}
-                override fun onError(conn: WebSocket?, ex: Exception?) {}
+                override fun onError(conn: WebSocket?, ex: Exception?) {
+                    if (conn == null) toast("المنفذ 8080 مشغول أو ما اشتغل السيرفر، اقفل التطبيق وافتحه من جديد")
+                }
                 override fun onStart() {}
-            }.also { it.isReuseAddr = true; it.start() }
-        } catch (_: Exception) {}
+            }.also {
+                it.isReuseAddr = true
+                it.connectionLostTimeout = 15
+                it.start()
+            }
+        } catch (e: Exception) {
+            toast("ما اشتغل السيرفر: " + (e.message ?: ""))
+        }
     }
 
     private fun setFocus(on: Boolean) {
@@ -318,6 +385,9 @@ class OverlayService : Service() {
             c.send(o.toString())
             return "sent"
         }
+
+        @JavascriptInterface
+        fun status(): String = if (client?.isOpen == true) "connected" else "waiting"
 
         @JavascriptInterface
         fun paste() {

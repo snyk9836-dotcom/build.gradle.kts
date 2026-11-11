@@ -48,7 +48,7 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
         val hint = TextView(this).apply {
-            text = "دائرة عايمة فوق ماينكرافت فيها كل الأوامر والسكريبتات.\nاضغط تشغيل، وبعدها افتح ماينكرافت."
+            text = "دائرة عايمة فوق ماينكرافت فيها كل الأوامر والسكريبتات.\nاضغط تشغيل، افتح ماينكرافت، الصق أمر الربط بالشات (ينتسخ تلقائياً)، وتصير الدائرة خضرة."
             textSize = 15f
             gravity = Gravity.CENTER
             setPadding(0, pad / 2, 0, pad)
@@ -165,6 +165,6 @@ class MainActivity : Activity() {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
         }
         ContextCompat.startForegroundService(this, Intent(this, OverlayService::class.java))
-        Toast.makeText(this, "ظهرت الدائرة ⚡ افتح ماينكرافت", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "ظهرت الدائرة ⚡ أمر الربط منسوخ، الصقه بماينكرافت", Toast.LENGTH_LONG).show()
     }
 }
