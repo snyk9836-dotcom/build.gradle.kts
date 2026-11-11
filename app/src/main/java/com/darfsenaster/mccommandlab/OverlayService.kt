@@ -47,6 +47,8 @@ class OverlayService : Service() {
     private var open = false
     private var srv: WebSocketServer? = null
     @Volatile private var client: WebSocket? = null
+    @Volatile private var lastPos: String = ""
+    @Volatile private var posReq: String = ""
     private val ui = Handler(Looper.getMainLooper())
 
     private val dp: Float get() = resources.displayMetrics.density
@@ -301,6 +303,26 @@ class OverlayService : Service() {
         }
     }
 
+    // نقرأ جواب querytarget حتى نعرف موقع اللاعب
+    private fun handleMsg(m: String?) {
+        try {
+            if (m == null) return
+            val j = JSONObject(m)
+            val id = j.optJSONObject("header")?.optString("requestId") ?: return
+            if (id != posReq) return
+            val d = j.optJSONObject("body")?.opt("details")
+            val arr = when (d) {
+                is String -> org.json.JSONArray(d)
+                is org.json.JSONArray -> d
+                else -> null
+            }
+            val e = arr?.optJSONObject(0) ?: return
+            val p = e.optJSONObject("position") ?: return
+            lastPos = JSONObject().put("x", p.optDouble("x")).put("y", p.optDouble("y")).put("z", p.optDouble("z"))
+                .put("dim", e.optInt("dimension")).put("yRot", e.optDouble("yRot")).toString()
+        } catch (_: Exception) {}
+    }
+
     private fun startSrv() {
         try {
             srv = object : WebSocketServer(InetSocketAddress("127.0.0.1", 8080)) {
@@ -318,7 +340,7 @@ class OverlayService : Service() {
                         toast("انقطع الاتصال (code=$code، " + (if (remote) "من ماينكرافت" else "من التطبيق") + ")")
                     }
                 }
-                override fun onMessage(conn: WebSocket?, message: String?) {}
+                override fun onMessage(conn: WebSocket?, message: String?) { handleMsg(message) }
                 override fun onError(conn: WebSocket?, ex: Exception?) {
                     if (conn == null) toast("خطأ بالسيرفر: " + (ex?.message ?: "غير معروف"))
                 }
@@ -362,6 +384,24 @@ class OverlayService : Service() {
             c.send(o.toString())
             return "sent"
         }
+
+        @JavascriptInterface
+        fun queryPos(): String {
+            val c = client
+            if (c == null || !c.isOpen) return "no-game"
+            lastPos = ""
+            posReq = UUID.randomUUID().toString()
+            val o = JSONObject()
+                .put("header", JSONObject().put("version", 1).put("requestId", posReq)
+                    .put("messageType", "commandRequest").put("messagePurpose", "commandRequest"))
+                .put("body", JSONObject().put("version", 1).put("commandLine", "querytarget @s")
+                    .put("origin", JSONObject().put("type", "player")))
+            c.send(o.toString())
+            return "sent"
+        }
+
+        @JavascriptInterface
+        fun pos(): String = lastPos
 
         @JavascriptInterface
         fun paste() {
