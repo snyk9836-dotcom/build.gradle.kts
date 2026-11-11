@@ -49,6 +49,8 @@ class OverlayService : Service() {
     @Volatile private var client: WebSocket? = null
     @Volatile private var lastPos: String = ""
     @Volatile private var posReq: String = ""
+    private val sentCmds = java.util.concurrent.ConcurrentHashMap<String, String>()
+    private val failList = java.util.concurrent.CopyOnWriteArrayList<String>()
     private val ui = Handler(Looper.getMainLooper())
 
     private val dp: Float get() = resources.displayMetrics.density
@@ -309,6 +311,14 @@ class OverlayService : Service() {
             if (m == null) return
             val j = JSONObject(m)
             val id = j.optJSONObject("header")?.optString("requestId") ?: return
+            val cmd = sentCmds.remove(id)
+            if (cmd != null) {
+                val b = j.optJSONObject("body")
+                if (b != null && b.optInt("statusCode", 0) != 0) {
+                    failList.add(cmd + " ← " + b.optString("statusMessage", "فشل"))
+                }
+                return
+            }
             if (id != posReq) return
             val d = j.optJSONObject("body")?.opt("details")
             val arr = when (d) {
@@ -376,13 +386,26 @@ class OverlayService : Service() {
         fun run(cmd: String): String {
             val c = client
             if (c == null || !c.isOpen) return "no-game"
+            val rid = UUID.randomUUID().toString()
+            val line = cmd.trim().removePrefix("/")
+            sentCmds[rid] = line
             val o = JSONObject()
-                .put("header", JSONObject().put("version", 1).put("requestId", UUID.randomUUID().toString())
+                .put("header", JSONObject().put("version", 1).put("requestId", rid)
                     .put("messageType", "commandRequest").put("messagePurpose", "commandRequest"))
-                .put("body", JSONObject().put("version", 1).put("commandLine", cmd.trim().removePrefix("/"))
+                .put("body", JSONObject().put("version", 1).put("commandLine", line)
                     .put("origin", JSONObject().put("type", "player")))
             c.send(o.toString())
             return "sent"
+        }
+
+        @JavascriptInterface
+        fun resetFails() { failList.clear(); sentCmds.clear() }
+
+        @JavascriptInterface
+        fun failures(): String {
+            val a = org.json.JSONArray()
+            failList.forEach { a.put(it) }
+            return a.toString()
         }
 
         @JavascriptInterface
