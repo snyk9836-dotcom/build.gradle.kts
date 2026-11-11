@@ -414,7 +414,7 @@ document.addEventListener("touchstart",function(e){if(e.target.tagName==="SELECT
 <script>
 (function(){
 var K="gm_key",M="gm_model",C="gm_convs",A="gm_cur",mem={};
-var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. عندك صلاحية كاملة لكل أوامر Bedrock بدون أي قائمة محظورة: fill و clone و setblock و execute و structure و scoreboard و tag و kill و give و summon و tp و effect و gamemode و time و weather و particle و playsound و titleraw و enchant و replaceitem و camera وغيرها. إذا طلب المستخدم شي ينفذ باللعبة اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش وبدون شرح داخل الكتلة. استعمل صياغة Bedrock فقط (مو Java). المواقع: بنهاية التعليمات تلكى موقع اللاعب الحقيقي واتجاهه. للبناء والتعديل استعمل إحداثيات رقمية مطلقة تحسبها من موقعه ما لم يحدد المستخدم مكان ثاني (إحداثيات، أو اسم مكان محفوظ، أو إزاحة مثل 20 بلوك شرق)، وإذا حدد مكان استعمله بدل موقع اللاعب. الاتجاهات: شرق x موجب، غرب x سالب، جنوب z موجب، شمال z سالب. الأمر fill و clone حدهم 32768 بلوك للأمر الواحد، فقسّم البناء الكبير لعدة أوامر. إذا الأمر مدمر بشكل كبير (مثل kill @e أو fill ضخم) نبّه المستخدم بسطر قبل الكتلة. إذا طلب المستخدم يحفظ مكان باسم، اكتب بنهاية ردك سطر [[SAVE:الاسم]] لحفظ موقعه الحالي، أو [[SAVE:الاسم|x y z]] لإحداثيات محددة.";
+var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. عندك صلاحية كاملة لكل أوامر Bedrock بدون أي قائمة محظورة: fill و clone و setblock و execute و structure و scoreboard و tag و kill و give و summon و tp و effect و gamemode و time و weather و particle و playsound و titleraw و enchant و replaceitem و camera وغيرها. إذا طلب المستخدم شي ينفذ باللعبة اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش وبدون شرح داخل الكتلة. استعمل صياغة Bedrock فقط (مو Java). المواقع: بنهاية التعليمات تلكى موقع اللاعب الحقيقي واتجاهه. للبناء والتعديل استعمل إحداثيات رقمية مطلقة تحسبها من موقعه ما لم يحدد المستخدم مكان ثاني (إحداثيات، أو اسم مكان محفوظ، أو إزاحة مثل 20 بلوك شرق)، وإذا حدد مكان استعمله بدل موقع اللاعب. الاتجاهات: شرق x موجب، غرب x سالب، جنوب z موجب، شمال z سالب. الأمر fill و clone حدهم 32768 بلوك للأمر الواحد، فقسّم البناء الكبير لعدة أوامر، ولا تستعمل hollow أو outline على حجم أكبر من هذا الحد. اكتب كل fill بستة إحداثيات كاملة وبلوك، وكل setblock بثلاثة إحداثيات وبلوك. إذا ما حدد المستخدم الحجم فاجعل البيت صغير (حوالي 9×9 وارتفاع 5)، وخلي كل الأبواب والسلالم والأثاث داخل حدود البناء أو ملاصقة له. إذا وصلك طلب تصحيح لأوامر فشلت، ارسل الأوامر المصلحة فقط. إذا الأمر مدمر بشكل كبير (مثل kill @e أو fill ضخم) نبّه المستخدم بسطر قبل الكتلة. إذا طلب المستخدم يحفظ مكان باسم، اكتب بنهاية ردك سطر [[SAVE:الاسم]] لحفظ موقعه الحالي، أو [[SAVE:الاسم|x y z]] لإحداثيات محددة.";
 
 function g(k){try{var v=localStorage.getItem(k);return v===null?mem[k]:v}catch(e){return mem[k]}}
 function w(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
@@ -555,11 +555,27 @@ ch.appendChild(btn("🔌 اختبار الجسر",function(b){var t="🔌 اخت
 fetch("http://127.0.0.1:3000/").then(function(r){return r.text()}).then(function(x){b.textContent=x==="bridge ok"?"✅ الجسر شغال":"❓ "+x}).catch(function(){fetch("http://127.0.0.1:3000/",{mode:"no-cors"}).then(function(){b.textContent="⚠️ الجسر شغال بس المتصفح يمنع القراءة"}).catch(function(x){b.textContent="❌ "+x.message})});
 setTimeout(function(){b.textContent=t},5000)},""));
 /* كتل الكود في الردود مع زر نسخ */
-function runNow(c,e){var L=c.split("\n").map(function(s){return s.trim()}).filter(Boolean),i=0;
-(function nx(){if(i>=L.length){e.textContent="✅ تم";return}
+function crd(t){return /^([~^](-?\d+(\.\d+)?)?|-?\d+(\.\d+)?)$/.test(t||"")}
+function prep(L){var out=[],bad=[];L.forEach(function(l){var s=l.replace(/^\//,""),t=s.split(/\s+/),c=t[0];
+if(c==="fill"){if(!(crd(t[1])&&crd(t[2])&&crd(t[3])&&crd(t[4])&&crd(t[5])&&crd(t[6])&&t[7])){bad.push("fill ناقص (يحتاج 6 إحداثيات وبلوك): "+s);return}
+var ints=true,n=[];for(var q=1;q<=6;q++){if(!/^-?\d+$/.test(t[q]))ints=false;n.push(parseInt(t[q],10))}
+if(ints){var lo=[Math.min(n[0],n[3]),Math.min(n[1],n[4]),Math.min(n[2],n[5])],hi=[Math.max(n[0],n[3]),Math.max(n[1],n[4]),Math.max(n[2],n[5])],sp=[hi[0]-lo[0]+1,hi[1]-lo[1]+1,hi[2]-lo[2]+1],vol=sp[0]*sp[1]*sp[2];
+if(vol>32768){if(t.slice(8).some(function(w){return w==="hollow"||w==="outline"})){bad.push("fill hollow/outline أكبر من 32768 بلوك ("+vol+"): قسّمه لأوامر أصغر: "+s);return}
+var ax=sp.indexOf(Math.max(sp[0],sp[1],sp[2])),ch=Math.max(1,Math.floor(32768/(vol/sp[ax]))),rest=t.slice(7).join(" ");
+for(var a=lo[ax];a<=hi[ax];a+=ch){var b=Math.min(hi[ax],a+ch-1),A=lo.slice(),B=hi.slice();A[ax]=a;B[ax]=b;out.push("fill "+A.join(" ")+" "+B.join(" ")+" "+rest)}return}}
+out.push(s);return}
+if(c==="setblock"){if(!(crd(t[1])&&crd(t[2])&&crd(t[3])&&t[4])){bad.push("setblock ناقص: "+s);return}}
+out.push(s)});return{cmds:out,bad:bad}}
+function runNow(c,e){var P=prep(c.split("\n").map(function(s){return s.trim()}).filter(Boolean)),L=P.cmds,i=0;
+try{if(window.AB&&AB.resetFails)AB.resetFails()}catch(x){}
+function fin(){setTimeout(function(){var f=[];try{f=JSON.parse(AB.failures?AB.failures():"[]")}catch(x){}
+var all=P.bad.concat(f);if(!all.length){e.textContent="✅ تم ("+L.length+" أمر)";return}
+e.textContent="⚠️ فشل "+all.length+" من "+(L.length+P.bad.length)+" أمر: "+all[0];
+var gi=document.getElementById("gin");if(gi&&!gi.value)gi.value="هذي الأوامر فشلت، صلحها وارسل الأوامر المصلحة فقط: "+all.slice(0,8).join(" ؛ ")},900)}
+(function nx(){if(i>=L.length){fin();return}
 var r=window.AB&&AB.run?AB.run(L[i++]):"التطبيق قديم";
 if(r!=="sent"){e.textContent="❌ "+(r==="no-game"?"اكتب بماينكرافت: /connect ws://127.0.0.1:8080":r);return}
-setTimeout(nx,150)})()}
+e.textContent="⏳ "+i+"/"+L.length;setTimeout(nx,150)})()}
 function runMc(c,e){var n=(window.__delay==null?3:window.__delay);
 (function t(){if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000)}else{runNow(c,e)}})()}
 window.__runMc=runMc;window.__runNow=runNow;window.__auto=(g("gm_auto",1)!==0);
