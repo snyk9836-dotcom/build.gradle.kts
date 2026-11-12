@@ -51,6 +51,8 @@ class OverlayService : Service() {
     @Volatile private var posReq: String = ""
     private val sentCmds = java.util.concurrent.ConcurrentHashMap<String, String>()
     private val failList = java.util.concurrent.CopyOnWriteArrayList<String>()
+    private val probeIds = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+    private val probeRes = java.util.concurrent.ConcurrentHashMap<String, Boolean>()
     private val ui = Handler(Looper.getMainLooper())
 
     private val dp: Float get() = resources.displayMetrics.density
@@ -311,6 +313,11 @@ class OverlayService : Service() {
             if (m == null) return
             val j = JSONObject(m)
             val id = j.optJSONObject("header")?.optString("requestId") ?: return
+            if (probeIds.remove(id)) {
+                val pb = j.optJSONObject("body")
+                probeRes[id] = (pb?.optInt("statusCode", 1) ?: 1) == 0
+                return
+            }
             val cmd = sentCmds.remove(id)
             if (cmd != null) {
                 val b = j.optJSONObject("body")
@@ -397,6 +404,31 @@ class OverlayService : Service() {
             c.send(o.toString())
             return "sent"
         }
+
+        // فحص سريع (testforblock) ننتظر نتيجته بدون ما يدخل بقائمة الأخطاء
+        @JavascriptInterface
+        fun probe(cmd: String): String {
+            val c = client
+            if (c == null || !c.isOpen) return "no-game"
+            val rid = UUID.randomUUID().toString()
+            probeIds.add(rid)
+            val o = JSONObject()
+                .put("header", JSONObject().put("version", 1).put("requestId", rid)
+                    .put("messageType", "commandRequest").put("messagePurpose", "commandRequest"))
+                .put("body", JSONObject().put("version", 1).put("commandLine", cmd.trim().removePrefix("/"))
+                    .put("origin", JSONObject().put("type", "player")))
+            c.send(o.toString())
+            return rid
+        }
+
+        @JavascriptInterface
+        fun probeGet(id: String): String {
+            val r = probeRes[id] ?: return ""
+            return if (r) "1" else "0"
+        }
+
+        @JavascriptInterface
+        fun probeClear() { probeIds.clear(); probeRes.clear() }
 
         @JavascriptInterface
         fun resetFails() { failList.clear(); sentCmds.clear() }
