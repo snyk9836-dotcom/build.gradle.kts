@@ -414,7 +414,7 @@ document.addEventListener("touchstart",function(e){if(e.target.tagName==="SELECT
 <script>
 (function(){
 var K="gm_key",M="gm_model",C="gm_convs",A="gm_cur",mem={};
-var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. عندك صلاحية كاملة لكل أوامر Bedrock بدون أي قائمة محظورة: fill و clone و setblock و execute و structure و scoreboard و tag و kill و give و summon و tp و effect و gamemode و time و weather و particle و playsound و titleraw و enchant و replaceitem و camera وغيرها. إذا طلب المستخدم شي ينفذ باللعبة اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش وبدون شرح داخل الكتلة. استعمل صياغة Bedrock فقط (مو Java). المواقع: بنهاية التعليمات تلكى موقع اللاعب الحقيقي واتجاهه. للبناء والتعديل استعمل إحداثيات رقمية مطلقة تحسبها من موقعه ما لم يحدد المستخدم مكان ثاني (إحداثيات، أو اسم مكان محفوظ، أو إزاحة مثل 20 بلوك شرق)، وإذا حدد مكان استعمله بدل موقع اللاعب. الاتجاهات: شرق x موجب، غرب x سالب، جنوب z موجب، شمال z سالب. الأمر fill و clone حدهم 32768 بلوك للأمر الواحد، فقسّم البناء الكبير لعدة أوامر، ولا تستعمل hollow أو outline على حجم أكبر من هذا الحد. اكتب كل fill بستة إحداثيات كاملة وبلوك، وكل setblock بثلاثة إحداثيات وبلوك. إذا ما حدد المستخدم الحجم فاجعل البيت صغير (حوالي 9×9 وارتفاع 5)، وخلي كل الأبواب والسلالم والأثاث داخل حدود البناء أو ملاصقة له. إذا وصلك طلب تصحيح لأوامر فشلت، ارسل الأوامر المصلحة فقط. إذا الأمر مدمر بشكل كبير (مثل kill @e أو fill ضخم) نبّه المستخدم بسطر قبل الكتلة. إذا طلب المستخدم يحفظ مكان باسم، اكتب بنهاية ردك سطر [[SAVE:الاسم]] لحفظ موقعه الحالي، أو [[SAVE:الاسم|x y z]] لإحداثيات محددة.";
+var SYS="أنت مساعد داخل تطبيق مختبر الأوامر للعبة ماينكرافت (نسخة Bedrock). جاوب بالعربي وباختصار. عندك صلاحية كاملة لكل أوامر Bedrock بدون أي قائمة محظورة: fill و clone و setblock و execute و structure و scoreboard و tag و kill و give و summon و tp و effect و gamemode و time و weather و particle و playsound و titleraw و enchant و replaceitem و camera وغيرها. إذا طلب المستخدم شي ينفذ باللعبة اكتب الأوامر داخل كتلة كود ``` واحدة، أمر بكل سطر، بدون سلاش وبدون شرح داخل الكتلة. استعمل صياغة Bedrock فقط (مو Java). المواقع: بنهاية التعليمات تلكى موقع اللاعب الحقيقي واتجاهه. للبناء والتعديل استعمل إحداثيات رقمية مطلقة تحسبها من موقعه ما لم يحدد المستخدم مكان ثاني (إحداثيات، أو اسم مكان محفوظ، أو إزاحة مثل 20 بلوك شرق)، وإذا حدد مكان استعمله بدل موقع اللاعب. الاتجاهات: شرق x موجب، غرب x سالب، جنوب z موجب، شمال z سالب. الأمر fill و clone حدهم 32768 بلوك للأمر الواحد، فقسّم البناء الكبير لعدة أوامر، ولا تستعمل hollow أو outline على حجم أكبر من هذا الحد. اكتب كل fill بستة إحداثيات كاملة وبلوك، وكل setblock بثلاثة إحداثيات وبلوك. خلي كل الأبواب والسلالم والأثاث داخل حدود البناء أو ملاصقة له. إذا وصلك طلب تصحيح لأوامر فشلت، ارسل الأوامر المصلحة فقط. إذا الأمر مدمر بشكل كبير (مثل kill @e أو fill ضخم) نبّه المستخدم بسطر قبل الكتلة. إذا طلب المستخدم يحفظ مكان باسم، اكتب بنهاية ردك سطر [[SAVE:الاسم]] لحفظ موقعه الحالي، أو [[SAVE:الاسم|x y z]]  وضع المعماري (لأي بيت أو قصر أو مبنى): ابنِ بمستوى بنّائين اليوتيوب الاحترافيين، مو صناديق مصمتة. 1) اختر ستايل واضح (قصر قروسطي، فيلا حديثة، قلعة، بيت ياباني، بيت شجرة، بيت على جرف...) وباليت 4 إلى 6 مواد متناسقة: مادة للجدران، مادة للإطارات والأعمدة، مادة للسقف، مادة للأرضية، ومصدر إضاءة. 2) الحجم الافتراضي كبير ومفصل (عرض 25 إلى 45 بلوك، طابقين إلى ثلاثة)، إلا إذا حدد المستخدم غير ذلك. 3) اكسر الواجهة بالعمق: أعمدة بارزة بالزوايا، كورنيش وإطارات حول النوافذ، شرفات ونتوءات، برج أو جناح جانبي، وسقف مائل مبني بدرج stairs وslabs بدل السقف المسطح، وزجاج ونوافذ كبيرة. 4) قبل الأوامر اكتب خطة من 3 إلى 5 أسطر: الستايل، الأبعاد، الباليت، ونقطة الأصل (الزاوية الجنوبية الغربية السفلية) بإحداثياتها. احسب كل الإحداثيات من نقطة أصل واحدة والتزم بالأبعاد حرفياً حتى ما يتناقض البناء. 5) نفّذ على مراحل بالترتيب، كل مرحلة بكتلة كود مستقلة وعنوان قصير قبلها: أ) تسوية الأرض والأساس، ب) الهيكل والجدران والأعمدة، ج) النوافذ والأبواب، د) السقف، هـ) الداخل (غرف، سلالم، أثاث، إضاءة)، و) الواجهة والحديقة والتفاصيل (أشجار، ممرات، سياج، فوانيس). 6) لا تتجاوز حوالي 120 أمر بالرد الواحد. إذا البناء أكبر، أرسل المراحل الأولى وقل للمستخدم يكتب كمّل، وكمّل من نفس الخطة ونفس نقطة الأصل. 7) استعمل fill لأي سطح أو صندوق أو صف بدل setblock المتكرر. الدرج في Bedrock يُكتب هكذا: stone_brick_stairs [\"weirdo_direction\"=0,\"upside_down_bit\"=false] حيث الاتجاه 0 شرق و1 غرب و2 جنوب و3 شمال (جهة الصعود). الباب سطرين setblock: السفلي upper_block_bit=false والعلوي upper_block_bit=true. 8) الأرض عادةً تحت قدمي اللاعب مباشرة (الارتفاع مذكور بالمعلومات الحية)، فابنِ الأساس من هناك ولا تبني تحت الأرض إلا إذا طُلب، ولا تفترض أرض مستوية: ابنِ أساس سميك يغطي الفراغات تحت البيت. مراجعة بالصور: بعد ما تكتب أوامر البناء قد يرسل لك التطبيق 4 لقطات مرسومة منها (رسم تقريبي: المكعبات والدرج والبلاطات والزجاج الرفيع بشكلها التقريبي، وهي ليست لقطات من اللعبة) مع أبعاد البناء. راجعها بدقة: أجزاء عايمة، جدران أو أرضيات ناقصة، سقف غلط أو ناقص، أبواب ونوافذ خارج مكانها، ثقوب، تناقض بالأبعاد، أو واجهة مملة. إذا لقيت مشاكل اكتب أوامر تصحيح فقط (تُنفذ بعد أوامرك السابقة وفوقها، واستعمل fill air لإزالة الغلط) ولا تعيد البناء كله. وإذا البناء ممتاز اكتب كلمة: جاهز، بدون أي أوامر. التضاريس: قد تصلك ضمن المعلومات الحية شبكة ارتفاعات الأرض حول اللاعب، فاستعملها لتحديد مستوى الأساس: ردم المنخفضات بـ fill تحت البيت وإزالة النتوءات فوقه، ولا تفترض أرض مستوية.";
 
 function g(k){try{var v=localStorage.getItem(k);return v===null?mem[k]:v}catch(e){return mem[k]}}
 function w(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
@@ -437,34 +437,69 @@ function places(){try{return JSON.parse(g("gm_places")||"{}")}catch(e){return {}
 function sv(t){return t.replace(/\[\[SAVE:([^\]|]+)(?:\|([^\]]+))?\]\]/g,function(m,n,xyz){var pl=places(),c=null;n=n.trim();
 if(xyz){var a=xyz.trim().split(/[\s,]+/).map(Number);if(a.length>=3&&a.every(function(v){return isFinite(v)}))c={x:a[0],y:a[1],z:a[2]}}else if(window.__pos){c={x:Math.floor(window.__pos.x),y:Math.floor(window.__pos.y),z:Math.floor(window.__pos.z)}}
 if(!c)return "(ما قدرت أحفظ المكان: "+n+")";pl[n]=c;w("gm_places",JSON.stringify(pl));return "📍 انحفظ المكان: "+n+" ("+c.x+" "+c.y+" "+c.z+")"})}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+async function scanTerrain(p){if(!(window.AB&&AB.probe&&AB.probeGet))return"";
+var C=window.__tcache;if(C&&Date.now()-C.t<90000&&Math.abs(C.x-p.x)<6&&Math.abs(C.z-p.z)<6)return C.txt;
+var px=Math.floor(p.x),pz=Math.floor(p.z),fy=(p.y%1>0.55)?p.y-1.62:p.y,gy=Math.round(fy)-1,N=7,S=8,cols=[];
+for(var i=0;i<N;i++)for(var j=0;j<N;j++)cols.push({x:px+(j-3)*S,z:pz+(i-3)*S,lo:gy-24,hi:gy+24});
+try{AB.probeClear()}catch(e){}
+for(var round=0;round<6;round++){var act=cols.filter(function(c){return c.lo<c.hi});if(!act.length)break;
+var ids=act.map(function(c){c.mid=Math.ceil((c.lo+c.hi)/2);return AB.probe("testforblock "+c.x+" "+c.mid+" "+c.z+" air")});
+if(ids.indexOf("no-game")>-1)return"";
+var t0=Date.now();while(Date.now()-t0<2500){if(ids.every(function(id){return AB.probeGet(id)!==""}))break;await sleep(80)}
+for(var k=0;k<act.length;k++){var r=AB.probeGet(ids[k]);if(r==="")return"";if(r==="1")act[k].hi=act[k].mid-1;else act[k].lo=act[k].mid}}
+try{AB.probeClear()}catch(e){}
+var h=cols.map(function(c){return c.lo}),mn=Math.min.apply(null,h),mx=Math.max.apply(null,h),rows=[];
+for(var a=0;a<N;a++){rows.push("z="+(pz+(a-3)*S)+": "+h.slice(a*N,a*N+N).join(" "))}
+var txt="تضاريس الأرض حول اللاعب (ارتفاع أعلى بلوك صلب بكل نقطة، شبكة 7×7 كل 8 بلوك؛ الأعمدة x من "+(px-3*S)+" إلى "+(px+3*S)+" غرب→شرق، والأسطر من الشمال للجنوب):\n"+rows.join("\n")+"\nأدنى ارتفاع "+mn+" وأعلى ارتفاع "+mx+" (فرق "+(mx-mn)+"). الأشجار والأوراق تُحسب أرض فقد تبالغ. استعمل هذه الأرقام لتحديد مستوى الأساس: ردم المنخفضات بـ fill تحت البيت، وأزل النتوءات فوق مستوى الأساس.\n";
+window.__tcache={t:Date.now(),x:p.x,z:p.z,txt:txt};return txt}
 async function ctx(){var o="\n\n[معلومات حية]\n";var p=null;
 try{if(window.AB&&AB.queryPos&&AB.queryPos()==="sent"){for(var i=0;i<15&&!p;i++){await new Promise(function(r){setTimeout(r,100)});var s=AB.pos();if(s){try{p=JSON.parse(s)}catch(e){}}}}}catch(e){}
 if(p){window.__pos=p;var y=((p.yRot%360)+360)%360,d=["جنوب (z موجب)","غرب (x سالب)","شمال (z سالب)","شرق (x موجب)"][Math.round(y/90)%4];
-o+="موقع اللاعب الحالي: x="+Math.floor(p.x)+" y="+Math.floor(p.y)+" z="+Math.floor(p.z)+" | البعد: "+(["الأوفرورلد","النذر","الإند"][p.dim]||p.dim)+" | يطالع باتجاه: "+d+"\n"}
+var fy=(p.y%1>0.55)?p.y-1.62:p.y;o+="الأرض تحت قدميه تقريباً عند y="+(Math.round(fy)-1)+"\n";o+="موقع اللاعب الحالي: x="+Math.floor(p.x)+" y="+Math.floor(p.y)+" z="+Math.floor(p.z)+" | البعد: "+(["الأوفرورلد","النذر","الإند"][p.dim]||p.dim)+" | يطالع باتجاه: "+d+"\n"}
 else if(window.__pos){var q=window.__pos;o+="آخر موقع معروف للاعب (قد يكون قديم): x="+Math.floor(q.x)+" y="+Math.floor(q.y)+" z="+Math.floor(q.z)+"\n"}
 else o+="موقع اللاعب غير معروف (ماينكرافت مو متصلة). استعمل إحداثيات نسبية ~ ~ ~ أو ^ ^ ^ وانبّه المستخدم.\n";
+if(p&&window.__terrainOn!==false&&window.__wantTerrain&&!window.__inReview){window.__wantTerrain=false;try{var tt=await scanTerrain(p);if(tt)o+=tt}catch(e){}}
 var pl=places(),k=Object.keys(pl);if(k.length)o+="الأماكن المحفوظة: "+k.map(function(n){return n+"="+pl[n].x+" "+pl[n].y+" "+pl[n].z}).join("، ")+"\n";
 return o}
-async function send(){
-var key=g(K);if(!key){msg("احفظ المفتاح أول");return}
-var t=$("gin").value.trim();if(!t||busy)return;
-var c=conv()||mk();c.msgs.push({r:"user",t:t});if(c.msgs.length===1)c.title=t.slice(0,30);
-$("gin").value="";save();fillConvs();render();busy=true;
-var wait=bub("m","جيميناي يكتب...",false);$("gmsgs").appendChild(wait);$("gmsgs").scrollTop=$("gmsgs").scrollHeight;
-try{
-var body={systemInstruction:{parts:[{text:SYS+(await ctx())}]},contents:c.msgs.map(function(m){return{role:m.r,parts:[{text:m.t}]}})};
+var MAXR=2;
+function blocksOf(txt){var o=[],r=/```[\w-]*\n?([\s\S]*?)```/g,m;while((m=r.exec(txt)))o.push(m[1].trim());return o}
+async function gcall(c,extra){var key=g(K);var contents=c.msgs.map(function(m){return{role:m.r,parts:[{text:m.t}]}});if(extra)contents.push(extra);
+var body={systemInstruction:{parts:[{text:SYS+(await ctx())}]},contents:contents,generationConfig:{maxOutputTokens:32000}};
 var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(g(M)||MODELS[0])+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},body:JSON.stringify(body)});
 var j=await r.json();
 if(!r.ok)throw new Error((j.error&&j.error.message)||("HTTP "+r.status));
 var cd=j.candidates&&j.candidates[0];
 var txt=cd&&cd.content&&cd.content.parts?cd.content.parts.map(function(p){return p.text||""}).join(""):"";
 if(!txt)throw new Error(j.promptFeedback&&j.promptFeedback.blockReason?("محظور: "+j.promptFeedback.blockReason):"الرد فاضي");
-txt=sv(txt);c.msgs.push({r:"model",t:txt});save();render()
-if(window.__auto!==false&&window.__runMc){var rx=/```[\w-]*\n?([\s\S]*?)```/g,mm,st={set textContent(v){msg(v)}};while((mm=rx.exec(txt))){window.__runMc(mm[1].trim(),st)}}
-}catch(e){
+return sv(txt)}
+function showErr(m){var er=bub("e",m,false);$("gmsgs").appendChild(er);$("gmsgs").scrollTop=$("gmsgs").scrollHeight}
+async function reviewLoop(c){var B=window.__build;
+while(B.rounds<MAXR&&window.__review!==false&&window.__render&&!window.__abort){
+var R=null;try{R=window.__render(B.prior,B.blocks.join("\n"))}catch(e){}
+if(!R)break;B.rounds++;
+var w2=bub("m","🔍 جيميناي يراجع البناء بالصور (جولة "+B.rounds+" من "+MAXR+")...",false);$("gmsgs").appendChild(w2);$("gmsgs").scrollTop=$("gmsgs").scrollHeight;
+var txt;try{
+var parts=[{text:"[مراجعة تلقائية من التطبيق، جولة "+B.rounds+" من "+MAXR+"] هذي 4 لقطات مرسومة من أوامرك (مو من اللعبة، رسم تقريبي مكعبات). "+R.info+" راجعها واكتب أوامر تصحيح فقط، أو اكتب: جاهز."}].concat(R.imgs.map(function(d){return{inlineData:{mimeType:"image/jpeg",data:d}}}));
+window.__inReview=true;txt=await gcall(c,{role:"user",parts:parts});window.__inReview=false}catch(e){window.__inReview=false;render();showErr("تعذّرت المراجعة بالصور: "+e.message+" (راح أعرض لك البناء كما هو)");break}
+c.msgs.push({r:"user",t:"🔍 مراجعة تلقائية (جولة "+B.rounds+"): أرسل التطبيق 4 لقطات مرسومة للبناء"});c.msgs.push({r:"model",t:txt});save();render();
+var nb=blocksOf(txt);if(!nb.length)break;B.blocks=B.blocks.concat(nb)}}
+function finishBuild(){var B=window.__build,bl=B.blocks;if(!bl.length||window.__abort||window.__auto===false||!window.__runMc)return;
+if(window.__prev!==false&&window.__preview){window.__preview(B.prior,bl.join("\n"))}else window.__runMc(bl.join("\n"),{set textContent(v){msg(v)}})}
+async function send(){
+var key=g(K);if(!key){msg("احفظ المفتاح أول");return}
+var t=$("gin").value.trim();if(!t||busy)return;
+window.__abort=false;window.__lastPrompt=t;window.__wantTerrain=/بيت|قصر|قلعة|قلاع|برج|فيلا|مبنى|مباني|كوخ|بناء|ابني|ابنِ|house|castle|tower|villa|build/i.test(t);
+var c=conv()||mk();var pr=[];c.msgs.forEach(function(m2){if(m2.r==="model")blocksOf(m2.t).forEach(function(x){pr.push(x)})});
+c.msgs.push({r:"user",t:t});if(c.msgs.length===1)c.title=t.slice(0,30);
+$("gin").value="";save();fillConvs();render();busy=true;
+var wait=bub("m","جيميناي يكتب...",false);$("gmsgs").appendChild(wait);$("gmsgs").scrollTop=$("gmsgs").scrollHeight;
+var txt;try{txt=await gcall(c)}catch(e){
 c.msgs.pop();if(!c.msgs.length)c.title="محادثة جديدة";save();fillConvs();render();$("gin").value=t;
-var er=bub("e","خطأ: "+e.message+" (جرّب موديل ثاني من القائمة، أو تأكد من المفتاح والإنترنت)",false);$("gmsgs").appendChild(er);$("gmsgs").scrollTop=$("gmsgs").scrollHeight
-}
+showErr("خطأ: "+e.message+" (جرّب موديل ثاني من القائمة، أو تأكد من المفتاح والإنترنت)");busy=false;return}
+c.msgs.push({r:"model",t:txt});save();render();
+var bl=blocksOf(txt);window.__build={prior:pr.join("\n"),blocks:bl,rounds:0};
+if(bl.length){try{await reviewLoop(c)}catch(e){render();showErr("خطأ بالمراجعة: "+e.message)}if(window.__abort)msg("⏹ تم الإيقاف");finishBuild()}
 busy=false}
 $("gks").onclick=function(){var v=$("gk").value.trim();if(!v){msg("اكتب المفتاح أول");return}w(K,v);$("gk").value="";msg("انحفظ المفتاح ✅")};
 $("gkx").onclick=function(){w(K,"");$("gk").value="";msg("انحذف المفتاح")};
@@ -566,22 +601,166 @@ for(var a=lo[ax];a<=hi[ax];a+=ch){var b=Math.min(hi[ax],a+ch-1),A=lo.slice(),B=h
 out.push(s);return}
 if(c==="setblock"){if(!(crd(t[1])&&crd(t[2])&&crd(t[3])&&t[4])){bad.push("setblock ناقص: "+s);return}}
 out.push(s)});return{cmds:out,bad:bad}}
-function runNow(c,e){var P=prep(c.split("\n").map(function(s){return s.trim()}).filter(Boolean)),L=P.cmds,i=0;
+function runNow(c,e,my){var P=prep(c.split("\n").map(function(s){return s.trim()}).filter(Boolean)),L=P.cmds,i=0,U=null,note="";
 try{if(window.AB&&AB.resetFails)AB.resetFails()}catch(x){}
+try{U=window.__undoPrep(L)}catch(x){U=null}
+var nb=L.length;if(U){if(U.cmds.length){L=U.cmds.concat(["#wait"],L)}else if(U.note)note=" ("+U.note+")"}
+var total=L.length;
 function fin(){setTimeout(function(){var f=[];try{f=JSON.parse(AB.failures?AB.failures():"[]")}catch(x){}
-var all=P.bad.concat(f);if(!all.length){e.textContent="✅ تم ("+L.length+" أمر)";return}
-e.textContent="⚠️ فشل "+all.length+" من "+(L.length+P.bad.length)+" أمر: "+all[0];
+var sf=f.filter(function(q){return q.indexOf("structure save")===0}),f2=f.filter(function(q){return q.indexOf("structure save")!==0});
+if(sf.length&&U&&U.id)try{window.__undoDrop(U.id)}catch(x){}
+var all=P.bad.concat(f2),tail=sf.length?" — التراجع غير متاح (فشل حفظ النسخة)":(U&&U.cmds&&U.cmds.length?" — تقدر تتراجع ↩":note);
+if(!all.length){e.textContent="✅ تم ("+nb+" أمر)"+tail;return}
+e.textContent="⚠️ فشل "+all.length+" من "+(nb+P.bad.length)+" أمر: "+all[0];
 var gi=document.getElementById("gin");if(gi&&!gi.value)gi.value="هذي الأوامر فشلت، صلحها وارسل الأوامر المصلحة فقط: "+all.slice(0,8).join(" ؛ ")},900)}
-(function nx(){if(i>=L.length){fin();return}
-var r=window.AB&&AB.run?AB.run(L[i++]):"التطبيق قديم";
+(function nx(){if(my!==window.__runId){e.textContent="⏹ أُوقف عند "+i+"/"+total;return}
+if(i>=L.length){fin();return}
+var cmd=L[i++];if(cmd==="#wait"){setTimeout(nx,900);return}
+var r=window.AB&&AB.run?AB.run(cmd):"التطبيق قديم";
 if(r!=="sent"){e.textContent="❌ "+(r==="no-game"?"اكتب بماينكرافت: /connect ws://127.0.0.1:8080":r);return}
-e.textContent="⏳ "+i+"/"+L.length;setTimeout(nx,150)})()}
-function runMc(c,e){var n=(window.__delay==null?3:window.__delay);
-(function t(){if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000)}else{runNow(c,e)}})()}
+e.textContent="⏳ "+i+"/"+total;setTimeout(nx,150)})()}
+function runMc(c,e){var my=++window.__runId,n=(window.__delay==null?3:window.__delay);
+(function t(){if(my!==window.__runId){e.textContent="⏹ أُوقف";return}if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000)}else{runNow(c,e,my)}})()}
 window.__runMc=runMc;window.__runNow=runNow;window.__auto=(g("gm_auto",1)!==0);
+/* ===== معاينة البناء (تصوّر مجسّم من الأوامر) ===== */
+var BC={};
+function bcol(n){n=(n||"").replace(/^minecraft:/,"");if(BC[n])return BC[n];var c=bc2(n);function f(k){return"rgb("+Math.round(c[0]*k)+","+Math.round(c[1]*k)+","+Math.round(c[2]*k)+")"}return BC[n]={t:f(1),l:f(.74),r:f(.55)}}
+function bc2(n){var m,D={white:[235,235,235],orange:[220,120,30],magenta:[180,70,170],light_blue:[90,170,220],yellow:[230,200,50],lime:[110,190,35],pink:[230,140,170],light_gray:[150,150,145],gray:[70,75,80],cyan:[25,140,150],purple:[120,50,170],blue:[50,60,160],brown:[100,65,40],green:[80,110,40],red:[160,45,40],black:[25,25,30]};
+m=n.match(/^(white|orange|magenta|light_blue|yellow|lime|pink|light_gray|gray|cyan|purple|blue|brown|green|red|black)_(.+)$/);
+if(m&&/wool|concrete|terracotta|glass|carpet|glazed|candle|banner|bed|shulker/.test(m[2])){var b=D[m[1]];if(/terracotta/.test(m[2]))return[b[0]*.8,b[1]*.7,b[2]*.7];if(/glass/.test(m[2]))return[b[0]*.7+60,b[1]*.7+60,b[2]*.7+60];return b}
+var W=[["dark_oak",[60,45,30]],["birch",[215,205,170]],["spruce",[95,70,40]],["jungle",[160,115,80]],["acacia",[170,95,55]],["cherry",[230,170,185]],["mangrove",[120,50,45]],["crimson",[110,40,70]],["warped",[30,120,115]],["bamboo",[200,190,80]],["oak",[160,130,80]]];
+for(var i=0;i<W.length;i++)if(n.indexOf(W[i][0])>-1&&/log|wood|plank|stem|hyphae|door|fence|stairs|slab|trapdoor|sign|leaves/.test(n)){if(/leaves/.test(n))return[50,120,50];return W[i][1]}
+var K=[["oxidized",[80,160,140]],["weathered",[100,140,110]],["exposed",[160,125,100]],["copper",[190,115,85]],["glass",[165,210,235]],["ice",[160,200,255]],["water",[50,90,200]],["lava",[230,90,20]],["grass",[90,150,60]],["podzol",[90,65,35]],["dirt",[120,85,55]],["path",[150,130,80]],["sandstone",[215,200,150]],["sand",[220,205,150]],["gravel",[130,125,120]],["snow",[240,245,250]],["leaves",[50,120,50]],["moss",[90,120,50]],["deepslate",[70,70,75]],["blackstone",[45,40,50]],["cobblestone",[115,115,115]],["mossy",[95,120,90]],["stone_brick",[125,125,125]],["andesite",[135,135,135]],["diorite",[190,190,190]],["granite",[150,100,85]],["quartz",[235,230,225]],["nether_brick",[60,30,35]],["brick",[150,85,70]],["prismarine",[90,160,150]],["purpur",[170,125,170]],["iron",[200,200,200]],["gold",[250,210,60]],["diamond",[100,230,220]],["emerald",[60,200,100]],["redstone",[170,20,20]],["lapis",[40,70,160]],["obsidian",[25,15,40]],["netherrack",[110,40,40]],["end_stone",[220,220,160]],["glowstone",[255,220,120]],["sea_lantern",[200,230,220]],["lantern",[255,200,100]],["shroomlight",[240,150,70]],["torch",[255,200,80]],["light_block",[255,240,160]],["froglight",[240,230,160]],["bookshelf",[130,100,60]],["crafting",[150,110,60]],["furnace",[100,100,100]],["chest",[150,105,40]],["barrel",[130,95,55]],["bars",[150,150,150]],["hay",[200,170,40]],["pumpkin",[210,120,20]],["bed",[180,40,40]],["terracotta",[190,110,80]],["smooth_stone",[160,160,160]],["stone",[125,125,125]],["tuff",[110,110,100]],["calcite",[225,225,220]],["amethyst",[140,100,200]],["wool",[235,235,235]],["concrete",[150,150,150]],["log",[110,80,45]],["planks",[160,130,80]]];
+for(var j=0;j<K.length;j++)if(n.indexOf(K[j][0])>-1)return K[j][1];
+var h=0;for(var q=0;q<n.length;q++)h=(h*31+n.charCodeAt(q))%360;var s=h/60,x=Math.round(120*(1-Math.abs(s%2-1)));var P=[[170,x+50,50],[x+50,170,50],[50,170,x+50],[50,x+50,170],[x+50,50,170],[170,50,x+50]];return P[Math.floor(s)%6]}
+function vk(x,y,z){return((x+100000)*200001+(z+100000))*1024+(y+128)}
+function vdec(k){var y=k%1024-128,r=Math.floor(k/1024),z=r%200001-100000,x=Math.floor(r/200001)-100000;return[x,y,z]}
+function nmOf(v){return v.split("|")[0]}
+var FULLC={};
+function isFull(v){var n=nmOf(v);if(FULLC[n]!==undefined)return FULLC[n];return FULLC[n]=!((/slab/.test(n)&&n.indexOf("double")<0)||/stairs|pane|bars|fence|_wall|door|carpet|torch|lantern|button|pressure_plate|candle/.test(n))}
+function shapeOf(v,x,z,y,V){var n=nmOf(v),st=v.indexOf("|")>-1?v.slice(v.indexOf("|")+1):"";
+function num(re,d){var m=st.match(re);return m?parseInt(m[1],10):d}
+if(/slab/.test(n)&&n.indexOf("double")<0){var tp=/top_slot_bit"?\s*=\s*true|vertical_half"?\s*=\s*"?top/.test(st);return[[0,1,0,1,tp?.5:0,tp?1:.5]]}
+if(/stairs/.test(n)){var d=num(/weirdo_direction"?\s*=\s*(\d)/,0),up=/upside_down_bit"?\s*=\s*true/.test(st),S=[[.5,1,0,1],[0,.5,0,1],[0,1,.5,1],[0,1,0,.5]][d&3];return[[0,1,0,1,up?.5:0,up?1:.5],[S[0],S[1],S[2],S[3],up?0:.5,up?.5:1]]}
+if(/pane|bars|fence|_wall/.test(n)){var o=[[.375,.625,.375,.625,0,1]],con=function(dx,dz){var w=V.get(vk(x+dx,y,z+dz));return w!==undefined&&(isFull(w)||/pane|bars|fence|_wall/.test(nmOf(w)))};
+if(con(1,0))o.push([.625,1,.4375,.5625,0,1]);if(con(-1,0))o.push([0,.375,.4375,.5625,0,1]);if(con(0,1))o.push([.4375,.5625,.625,1,0,1]);if(con(0,-1))o.push([.4375,.5625,0,.375,0,1]);return o}
+if(/trapdoor/.test(n)){var u2=/upside_down_bit"?\s*=\s*true/.test(st);return[[0,1,0,1,u2?.8125:0,u2?1:.1875]]}
+if(/door/.test(n)){var dd=num(/direction"?\s*=\s*(\d)/,0);return dd%2===0?[[0,1,.85,1,0,1]]:[[.85,1,0,1,0,1]]}
+if(/carpet|pressure_plate|button/.test(n))return[[0,1,0,1,0,.08]];
+if(/torch|lantern|candle/.test(n))return[[.375,.625,.375,.625,0,.6]];
+return null}
+function sim(text){var V=new Map(),L=text.split("\n").map(function(s){return s.trim()}).filter(Boolean),P=prep(L).cmds,sk=0,ok=0,pos=window.__pos,bx=pos?Math.floor(pos.x):0,by=pos?Math.floor(pos.y):0,bz=pos?Math.floor(pos.z):0;
+function rc(t,b){if(t==null)return NaN;if(t[0]==="^")return NaN;if(t[0]==="~")return b+(t.length>1?Math.floor(parseFloat(t.slice(1))):0);return Math.floor(parseFloat(t))}
+function put(x,y,z,v,mode,flt){if(y<-128||y>895)return;var k=vk(x,y,z),has=V.has(k),n=nmOf(v);if(mode==="keep"&&has)return;if(flt&&(!has||nmOf(V.get(k))!==flt))return;if(n==="air"||n==="cave_air"||n==="void_air")V.delete(k);else V.set(k,v)}
+function pt(tail){var m=tail.match(/^([^\s\[]+)\s*(\[[^\]]*\])?\s*(.*)$/);if(!m)return null;var rest=m[3].split(/\s+/).filter(Boolean);if(rest[0]&&/^\d+$/.test(rest[0]))rest.shift();return{n:m[1].replace(/^minecraft:/,""),st:m[2]||"",rest:rest}}
+P.forEach(function(s){var t=s.split(/\s+/),c=t[0];
+if(c==="fill"){var x1=rc(t[1],bx),y1=rc(t[2],by),z1=rc(t[3],bz),x2=rc(t[4],bx),y2=rc(t[5],by),z2=rc(t[6],bz);if([x1,y1,z1,x2,y2,z2].some(isNaN)||!t[7]){sk++;return}
+var xa=Math.min(x1,x2),xb=Math.max(x1,x2),ya=Math.min(y1,y2),yb=Math.max(y1,y2),za=Math.min(z1,z2),zb=Math.max(z1,z2);if((xb-xa+1)*(yb-ya+1)*(zb-za+1)>1500000){sk++;return}
+var q=pt(t.slice(7).join(" "));if(!q){sk++;return}var v=q.n+(q.st?"|"+q.st:""),mode="replace",flt=null;
+if(q.rest[0]&&/^(destroy|hollow|keep|outline|replace)$/.test(q.rest[0])){mode=q.rest[0];if(mode==="replace"&&q.rest[1])flt=q.rest[1].split("[")[0].replace(/^minecraft:/,"")}
+for(var x=xa;x<=xb;x++)for(var y=ya;y<=yb;y++)for(var z=za;z<=zb;z++){var edge=(x===xa||x===xb||y===ya||y===yb||z===za||z===zb);
+if(mode==="hollow"){if(edge)put(x,y,z,v,"replace");else V.delete(vk(x,y,z))}else if(mode==="outline"){if(edge)put(x,y,z,v,"replace")}else put(x,y,z,v,mode==="keep"?"keep":"replace",flt)}ok++;return}
+if(c==="setblock"){var a=rc(t[1],bx),b=rc(t[2],by),d=rc(t[3],bz);if([a,b,d].some(isNaN)||!t[4]){sk++;return}var q2=pt(t.slice(4).join(" "));if(!q2){sk++;return}var m=(q2.rest[0]&&/^(destroy|keep|replace)$/.test(q2.rest[0]))?q2.rest[0]:"replace";put(a,b,d,q2.n+(q2.st?"|"+q2.st:""),m==="keep"?"keep":"replace");ok++;return}
+sk++});return{V:V,sk:sk,ok:ok}}
+var PV={};
+function pvInit(){if(PV.root)return;var r=document.createElement("div");r.style.cssText="position:fixed;inset:0;background:#14161b;color:#ececec;z-index:100000;display:none;flex-direction:column;font-family:inherit;direction:rtl";
+function B(txt,fn){var b=document.createElement("button");b.textContent=txt;b.style.cssText="padding:8px 12px;margin:3px;background:#2a2e37;color:#ececec;border:1px solid #3a3f4a;border-radius:8px;font-size:14px";b.onclick=function(){fn(b)};return b}
+var top=document.createElement("div");top.style.cssText="padding:6px 8px;font-size:13px;display:flex;justify-content:space-between;align-items:center";PV.info=document.createElement("span");top.appendChild(PV.info);top.appendChild(B("✕",function(){r.style.display="none"}));
+var cv=document.createElement("canvas");cv.style.cssText="flex:1;min-height:0;width:100%;background:#0e1014;touch-action:none";PV.cv=cv;
+var ct=document.createElement("div");ct.style.cssText="padding:4px 8px;display:flex;flex-wrap:wrap;align-items:center";
+ct.appendChild(B("↻ دوّر",function(){PV.rot=(PV.rot+1)%4;pvDraw()}));ct.appendChild(B("🗺 مسقط",function(b){PV.top=!PV.top;b.textContent=PV.top?"🧊 مجسّم":"🗺 مسقط";pvDraw()}));
+var lb=document.createElement("span");lb.style.cssText="font-size:12px;margin:0 6px";lb.textContent="قطع الارتفاع:";var sl=document.createElement("input");sl.type="range";sl.style.cssText="flex:1;min-width:120px";sl.oninput=function(){PV.cut=parseInt(sl.value,10);pvDraw()};PV.sl=sl;PV.lb=lb;ct.appendChild(lb);ct.appendChild(sl);
+var bt=document.createElement("div");bt.style.cssText="padding:4px 8px 10px;display:flex;flex-wrap:wrap";PV.ex=B("✅ نفّذ باللعبة",function(b){if(PV.cur&&window.__runMc)window.__runMc(PV.cur,b)});bt.appendChild(PV.ex);bt.appendChild(B("⏹ إيقاف",function(b){window.__stopAll()}));var ub2=B("↩ تراجع (0)",function(b){window.__undoLast(b)});UB.push(ub2);bt.appendChild(ub2);undoLabel();
+var ni=document.createElement("input");ni.placeholder="اسم البيت";ni.style.cssText="flex:1;min-width:110px;margin:3px;padding:8px;background:#1b1e24;color:#ececec;border:1px solid #3a3f4a;border-radius:8px;font-size:14px";PV.nm=ni;bt.appendChild(ni);
+bt.appendChild(B("💾 احفظ بالمكتبة",function(b){var r=window.__saveBuild(PV.nm.value||(window.__lastPrompt||"").slice(0,24),PV.cur||"");b.textContent=r==="ok"?"✅ انحفظ":"❌ "+r;setTimeout(function(){b.textContent="💾 احفظ بالمكتبة"},2500)}));
+r.appendChild(top);r.appendChild(cv);r.appendChild(ct);r.appendChild(bt);document.body.appendChild(r);PV.root=r}
+function drawTo(cv,V,o){var W=cv.width,H=cv.height,g=cv.getContext("2d"),cut=o.cut,rot=o.rot;g.fillStyle="#0e1014";g.fillRect(0,0,W,H);
+var X=[],Yv=[],Z=[],N=[];V.forEach(function(n,k){var p=vdec(k);if(p[1]<=cut){X.push(p[0]);Yv.push(p[1]);Z.push(p[2]);N.push(n)}});
+if(!X.length){g.fillStyle="#999";g.font="16px sans-serif";g.textAlign="center";g.fillText("ما فيه بناء لعرضه",W/2,H/2);return}
+var x0=Math.min.apply(null,X),x1=Math.max.apply(null,X),z0=Math.min.apply(null,Z),z1=Math.max.apply(null,Z),y0=o.minY,cx=(x0+x1)/2,cz=(z0+z1)/2,sx=x1-x0+1,sz=z1-z0+1;
+if(o.top){var M={};for(var i=0;i<X.length;i++){var kk=X[i]+","+Z[i];if(!M[kk]||M[kk].y<Yv[i])M[kk]={x:X[i],z:Z[i],y:Yv[i],n:N[i]}}var s=Math.max(1,Math.min((W-20)/sx,(H-20)/sz)),ox=(W-sx*s)/2,oz=(H-sz*s)/2;for(var q in M){var e=M[q];g.fillStyle=bcol(nmOf(e.n)).t;g.fillRect(ox+(e.x-x0)*s,oz+(e.z-z0)*s,Math.ceil(s),Math.ceil(s))}g.fillStyle="#ddd";g.font="12px sans-serif";g.textAlign="left";g.fillText("x="+x0+" z="+z0,4,12);g.textAlign="right";g.fillText("x="+x1+" z="+z1,W-4,H-4);return}
+var DA=[[1,0],[0,1],[-1,0],[0,-1]][rot],DB=[[0,1],[-1,0],[0,-1],[1,0]][rot],SH=[[0,0],[0,1],[1,1],[1,0]][rot],has=function(x,y,z){if(y>cut)return false;var v=V.get(vk(x,y,z));return v!==undefined&&isFull(v)};
+function T(X2,Z2){var px=X2-cx,pz=Z2-cz;return rot===0?[px,pz]:rot===1?[pz,-px]:rot===2?[-px,-pz]:[-pz,px]}
+var K=.866,items=[];for(var j=0;j<X.length;j++){var x=X[j],y=Yv[j],z=Z[j],full=isFull(N[j]);if(full&&has(x+DA[0],y,z+DA[1])&&has(x+DB[0],y,z+DB[1])&&has(x,y+1,z))continue;var tt=T(x,z);items.push([tt[0],tt[1],y,N[j],tt[0]+tt[1]+y,x,z,full])}
+items.sort(function(p,q){return p[4]-q[4]});
+var amin=1e9,amax=-1e9,bmin=1e9,bmax=-1e9,ymax=-1e9;items.forEach(function(it){amin=Math.min(amin,it[0]);amax=Math.max(amax,it[0]);bmin=Math.min(bmin,it[1]);bmax=Math.max(bmax,it[1]);ymax=Math.max(ymax,it[2])});
+var minSX=1e9,maxSX=-1e9,minSY=1e9,maxSY=-1e9;[[amin,bmin],[amax+1,bmin],[amin,bmax+1],[amax+1,bmax+1]].forEach(function(p){[y0,ymax+1].forEach(function(h){var px=(p[0]-p[1])*K,py=(p[0]+p[1])*.5-h;minSX=Math.min(minSX,px);maxSX=Math.max(maxSX,px);minSY=Math.min(minSY,py);maxSY=Math.max(maxSY,py)})});
+var s3=Math.max(1,Math.min((W-20)/(maxSX-minSX),(H-20)/(maxSY-minSY)));s3=Math.min(s3,16);var offx=(W-(maxSX-minSX)*s3)/2-minSX*s3,offy=(H-(maxSY-minSY)*s3)/2-minSY*s3;
+function P(a,b,h){return[offx+(a-b)*K*s3,offy+((a+b)*.5-h)*s3]}
+function poly(pts,col){g.fillStyle=col;g.beginPath();g.moveTo(pts[0][0],pts[0][1]);for(var i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);g.closePath();g.fill();if(s3>=5){g.strokeStyle="rgba(0,0,0,.28)";g.lineWidth=.6;g.stroke()}}
+function box(a0,a1,b0,b1,h0,h1,c){poly([P(a0,b0,h1),P(a1,b0,h1),P(a1,b1,h1),P(a0,b1,h1)],c.t);poly([P(a0,b1,h0),P(a1,b1,h0),P(a1,b1,h1),P(a0,b1,h1)],c.l);poly([P(a1,b0,h0),P(a1,b1,h0),P(a1,b1,h1),P(a1,b0,h1)],c.r)}
+items.forEach(function(it){var a=it[0],b=it[1],y=it[2],v=it[3],c=bcol(nmOf(v));
+if(it[7]){box(a,a+1,b,b+1,y,y+1,c);return}
+var bx=shapeOf(v,it[5],it[6],y,V);if(!bx){box(a,a+1,b,b+1,y,y+1,c);return}
+bx.forEach(function(q){var p0=T(it[5]+q[0],it[6]+q[2]),p1=T(it[5]+q[1],it[6]+q[3]);box(Math.min(p0[0],p1[0])+SH[0],Math.max(p0[0],p1[0])+SH[0],Math.min(p0[1],p1[1])+SH[1],Math.max(p0[1],p1[1])+SH[1],y+q[4],y+q[5],c)})})}
+function pvDraw(){var cv=PV.cv,W=cv.clientWidth,H=cv.clientHeight;if(!W||!H)return;cv.width=W;cv.height=H;drawTo(cv,PV.V,{cut:PV.cut,rot:PV.rot,top:PV.top,minY:PV.minY})}
+window.__render=function(prior,cur){var all=(prior?prior+"\n":"")+cur,S=sim(all),bad=prep(all.split("\n").map(function(q){return q.trim()}).filter(Boolean)).bad;if(!S.V.size)return null;
+var minY=1e9,maxY=-1e9,x0=1e9,x1=-1e9,z0=1e9,z1=-1e9;S.V.forEach(function(n,k){var p=vdec(k);minY=Math.min(minY,p[1]);maxY=Math.max(maxY,p[1]);x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);z0=Math.min(z0,p[2]);z1=Math.max(z1,p[2])});
+function mk(o,label){var cv=document.createElement("canvas");cv.width=640;cv.height=480;drawTo(cv,S.V,o);var g=cv.getContext("2d");g.fillStyle="#fff";g.font="bold 15px sans-serif";g.textAlign="left";g.fillText(label,8,Math.max(26,o.top?28:22));return cv.toDataURL("image/jpeg",.8).split(",")[1]}
+var mid=minY+Math.max(2,Math.round((maxY-minY)*.3));
+var imgs=[mk({cut:maxY,rot:0,top:false,minY:minY},"1) 3D view from south-east"),mk({cut:maxY,rot:2,top:false,minY:minY},"2) 3D view from north-west"),mk({cut:maxY,rot:0,top:true,minY:minY},"3) top view (north=up, east=right)"),mk({cut:mid,rot:0,top:true,minY:minY},"4) top view cut at y<="+mid+" (ground floor)")];
+var info="الأبعاد: x من "+x0+" إلى "+x1+" (عرض "+(x1-x0+1)+")، z من "+z0+" إلى "+z1+" (عمق "+(z1-z0+1)+")، y من "+minY+" إلى "+maxY+" (ارتفاع "+(maxY-minY+1)+"). عدد البلوكات: "+S.V.size+". أوامر بناء ظهرت بالرسم: "+S.ok+"، أوامر ما انعرضت (غير بناء أو ^): "+S.sk+(bad.length?"، أوامر ناقصة أو مرفوضة ("+bad.length+"): "+bad.slice(0,5).join(" ؛ "):"")+".";
+return{imgs:imgs,info:info}};
+/* ===== إيقاف، تراجع، مكتبة البيوت ===== */
+var UB=[],LB={};
+window.__runId=window.__runId||0;
+window.__stopAll=function(){window.__runId++;window.__abort=true};
+function rcv(t,b){if(t==null)return NaN;if(t[0]==="^")return NaN;if(t[0]==="~")return b+(t.length>1?Math.floor(parseFloat(t.slice(1))):0);return Math.floor(parseFloat(t))}
+function bbox(L){var pos=window.__pos,bx=pos?Math.floor(pos.x):0,by=pos?Math.floor(pos.y):0,bz=pos?Math.floor(pos.z):0,B=null,rel=false;
+L.forEach(function(s){var t=s.split(/\s+/),c=t[0],n=c==="fill"?6:(c==="setblock"?3:0);if(!n)return;var v=[];for(var i=1;i<=n;i++){if(/^[~^]/.test(t[i]))rel=true;var r=rcv(t[i],[bx,by,bz][(i-1)%3]);if(isNaN(r))return;v.push(r)}
+var a=v.slice(0,3),b=n===6?v.slice(3):a;if(!B)B={x0:1e9,y0:1e9,z0:1e9,x1:-1e9,y1:-1e9,z1:-1e9};
+B.x0=Math.min(B.x0,a[0],b[0]);B.y0=Math.min(B.y0,a[1],b[1]);B.z0=Math.min(B.z0,a[2],b[2]);B.x1=Math.max(B.x1,a[0],b[0]);B.y1=Math.max(B.y1,a[1],b[1]);B.z1=Math.max(B.z1,a[2],b[2])});
+if(B&&rel&&!pos)return null;return B}
+function undoLabel(){var n=g("gm_undo",[]).length;UB.forEach(function(b){b.textContent="↩ تراجع ("+n+")"})}
+window.__undoLabel=undoLabel;
+window.__undoPrep=function(L){if(window.__undo===false||!(window.AB&&AB.run))return null;var bb=bbox(L);if(!bb)return null;
+var y0=Math.max(bb.y0,-64),y1=Math.min(bb.y1,320);if(y1<y0)return null;var step=48,ch=[];
+for(var x=bb.x0;x<=bb.x1;x+=step)for(var y=y0;y<=y1;y+=step)for(var z=bb.z0;z<=bb.z1;z+=step)ch.push({x:x,y:y,x2:Math.min(bb.x1,x+step-1),y2:Math.min(y1,y+step-1),z:z,z2:Math.min(bb.z1,z+step-1)});
+if(ch.length>36)return{cmds:[],note:"المنطقة كبيرة، التراجع غير متاح"};
+var id=Date.now().toString(36),cmds=[],ent=[];ch.forEach(function(q,i){var nm="mclab_"+id+"_"+i;cmds.push("structure save "+nm+" "+q.x+" "+q.y+" "+q.z+" "+q.x2+" "+q.y2+" "+q.z2+" false memory true");ent.push({n:nm,x:q.x,y:q.y,z:q.z})});
+var st=g("gm_undo",[]);st.push({id:id,ch:ent,t:Date.now()});while(st.length>5)st.shift();w("gm_undo",st);undoLabel();return{id:id,cmds:cmds}};
+window.__undoDrop=function(id){w("gm_undo",g("gm_undo",[]).filter(function(u){return u.id!==id}));undoLabel()};
+window.__undoLast=function(e){var st=g("gm_undo",[]);if(!st.length){e.textContent="ما فيه شي للتراجع";setTimeout(undoLabel,2000);return}
+var u=st[st.length-1],my=++window.__runId,n=(window.__delay==null?3:window.__delay),i=0;
+(function t(){if(my!==window.__runId){e.textContent="⏹ أُوقف";setTimeout(undoLabel,2000);return}if(n>0){e.textContent="⏳ سكّر اللوحة وارجع للعبة... "+n;n--;setTimeout(t,1000);return}
+if(i>=u.ch.length){st.pop();w("gm_undo",st);e.textContent="↩ تم التراجع";setTimeout(undoLabel,2500);return}
+var q=u.ch[i++],r=window.AB&&AB.run?AB.run("structure load "+q.n+" "+q.x+" "+q.y+" "+q.z):"التطبيق قديم";if(r!=="sent"){e.textContent="❌ "+(r==="no-game"?"ماينكرافت مو متصلة":r);setTimeout(undoLabel,3000);return}
+e.textContent="↩ "+i+"/"+u.ch.length;setTimeout(t,400)})()};
+function normCmds(cmds){var pos=window.__pos,bs=[pos?Math.floor(pos.x):0,pos?Math.floor(pos.y):0,pos?Math.floor(pos.z):0],out=[];
+cmds.forEach(function(s){var t=s.split(/\s+/),c=t[0],n=c==="fill"?6:(c==="setblock"?3:0);if(!n)return;var v=[];for(var i=1;i<=n;i++){var r=rcv(t[i],bs[(i-1)%3]);if(isNaN(r))return;v.push(r)}out.push(c+" "+v.join(" ")+" "+t.slice(n+1).join(" "))});return out}
+function translate(cmds,dx,dy,dz){var d=[dx,dy,dz];return cmds.map(function(s){var t=s.split(/\s+/),n=t[0]==="fill"?6:3;for(var i=1;i<=n;i++)t[i]=String(parseInt(t[i],10)+d[(i-1)%3]);return t.join(" ")})}
+window.__saveBuild=function(name,text){var cm=normCmds(prep(text.split("\n").map(function(s){return s.trim()}).filter(Boolean)).cmds);if(!cm.length)return"ما فيه أوامر بناء للحفظ";var bb=bbox(cm);if(!bb)return"ما قدرت أحسب حجم البناء";
+var lib=g("gm_lib",[]);name=(name||"").trim()||"بيت "+(lib.length+1);lib.unshift({n:name,c:cm,b:bb,t:Date.now()});while(lib.length>30)lib.pop();w("gm_lib",lib);return"ok"};
+function getPos(){return new Promise(function(res){try{if(!(window.AB&&AB.queryPos&&AB.queryPos()==="sent")){res(null);return}}catch(e){res(null);return}var n=0;(function p(){var s=AB.pos();if(s){try{var o=JSON.parse(s);window.__pos=o;res(o);return}catch(e){}}if(++n>15){res(null);return}setTimeout(p,100)})()})}
+function libUI(){if(LB.root)return;var r=document.createElement("div");r.style.cssText="position:fixed;inset:0;background:#14161b;color:#ececec;z-index:100001;display:none;flex-direction:column;direction:rtl";
+var top=document.createElement("div");top.style.cssText="padding:8px;display:flex;justify-content:space-between;align-items:center;font-size:15px";var tt=document.createElement("span");tt.textContent="📚 مكتبة البيوت";top.appendChild(tt);
+var cl=document.createElement("button");cl.textContent="✕";cl.style.cssText="padding:8px 12px;background:#2a2e37;color:#ececec;border:1px solid #3a3f4a;border-radius:8px;font-size:14px";cl.onclick=function(){r.style.display="none"};top.appendChild(cl);
+var ls=document.createElement("div");ls.style.cssText="flex:1;overflow:auto;padding:8px";LB.list=ls;r.appendChild(top);r.appendChild(ls);document.body.appendChild(r);LB.root=r}
+function libBtn(txt,fn){var b=document.createElement("button");b.textContent=txt;b.style.cssText="padding:7px 10px;margin:3px;background:#2a2e37;color:#ececec;border:1px solid #3a3f4a;border-radius:8px;font-size:13px";b.onclick=function(){fn(b)};return b}
+async function placeEntry(en,b){var old=b.textContent;b.textContent="...";var pos=await getPos();if(!pos){b.textContent="اتصل بماينكرافت أول";setTimeout(function(){b.textContent=old},2500);return}
+var bb=en.b,sx=bb.x1-bb.x0+1,sz=bb.z1-bb.z0+1,cx=(bb.x0+bb.x1)/2,cz=(bb.z0+bb.z1)/2,yr=((pos.yRot%360)+360)%360,v=[[0,1],[-1,0],[0,-1],[1,0]][Math.round(yr/90)%4],dist=Math.max(sx,sz)/2+3,fy=(pos.y%1>.55)?pos.y-1.62:pos.y,gy=Math.round(fy)-1,
+dx=Math.round(pos.x+v[0]*dist-cx),dz=Math.round(pos.z+v[1]*dist-cz),dy=gy-bb.y0;b.textContent=old;LB.root.style.display="none";window.__preview("",translate(en.c,dx,dy,dz).join("\n"))}
+function libRefresh(){var lib=g("gm_lib",[]);LB.list.innerHTML="";if(!lib.length){var e0=document.createElement("div");e0.style.cssText="padding:16px;color:#999";e0.textContent="المكتبة فاضية. افتح معاينة أي بناء ودوس 💾 احفظ بالمكتبة.";LB.list.appendChild(e0);return}
+lib.forEach(function(en,i){var row=document.createElement("div");row.style.cssText="border:1px solid #33373f;border-radius:10px;padding:8px;margin-bottom:8px;background:#1b1e24";var nm=document.createElement("div");nm.style.cssText="font-size:15px;margin-bottom:2px";nm.textContent=en.n;
+var inf=document.createElement("div");inf.style.cssText="font-size:12px;color:#9aa";inf.textContent=(en.b.x1-en.b.x0+1)+"×"+(en.b.y1-en.b.y0+1)+"×"+(en.b.z1-en.b.z0+1)+" — "+en.c.length+" أمر";
+row.appendChild(nm);row.appendChild(inf);row.appendChild(libBtn("🏗 ابنِ قدامي",function(b){placeEntry(en,b)}));
+row.appendChild(libBtn("🗑 حذف",function(b){if(b.dataset.s!=="1"){b.dataset.s="1";b.textContent="متأكد؟ دوس مرة ثانية";setTimeout(function(){b.dataset.s="";b.textContent="🗑 حذف"},3000);return}var l2=g("gm_lib",[]);l2.splice(i,1);w("gm_lib",l2);libRefresh()}));LB.list.appendChild(row)})}
+window.__libOpen=function(){libUI();libRefresh();LB.root.style.display="flex"};
+(function(){var sb=btn("⏹ إيقاف",function(b){window.__stopAll();b.textContent="⏹ تم الإيقاف";setTimeout(function(){b.textContent="⏹ إيقاف"},1800)},"");ch.appendChild(sb);
+window.__undo=(g("gm_undoOn",1)!==0);var ub=btn("↩ تراجع (0)",function(b){window.__undoLast(b)},"");UB.push(ub);ch.appendChild(ub);undoLabel();
+ch.appendChild(btn("📚 مكتبة البيوت",function(){window.__libOpen()},""));
+function tl(){return"🌍 فحص الأرض: "+(window.__terrainOn!==false?"شغّال":"مطفي")}window.__terrainOn=(g("gm_terrain",1)!==0);ch.appendChild(btn(tl(),function(b){window.__terrainOn=!(window.__terrainOn!==false);w("gm_terrain",window.__terrainOn?1:0);b.textContent=tl()},""))})();
+window.__preview=function(prior,cur){pvInit();var all=(prior?prior+"\n":"")+cur,S=sim(all);PV.V=S.V;PV.cur=cur;PV.rot=PV.rot||0;PV.top=false;
+var minY=1e9,maxY=-1e9;S.V.forEach(function(n,k){var y=vdec(k)[1];if(y<minY)minY=y;if(y>maxY)maxY=y});if(minY>maxY){minY=0;maxY=0}PV.minY=minY;PV.cut=maxY;PV.sl.min=minY;PV.sl.max=maxY;PV.sl.value=maxY;
+PV.info.textContent="👁 معاينة: "+S.V.size+" بلوك، "+S.ok+" أمر بناء"+(S.sk?"، "+S.sk+" أمر ما انعرض (نسبي/غير بناء)":"");
+PV.root.style.display="flex";PV.ex.textContent="✅ نفّذ باللعبة";setTimeout(pvDraw,60)};
+function pvBtn(p){var cbs=p.querySelectorAll(".cb");if(!cbs.length)return;p.appendChild(btn("👁 معاينة البناء",function(e){var all=[].slice.call(document.querySelectorAll("#gmsgs .cb")),mine=[].slice.call(p.querySelectorAll(".cb")),f=all.indexOf(mine[0]);
+window.__preview(all.slice(0,f).map(function(d){return d.dataset.code}).join("\n"),mine.map(function(d){return d.dataset.code}).join("\n"))},""))}
+(function(){function lab(){return"🔍 مراجعة جيميناي بالصور: "+(window.__review!==false?"شغّالة":"مطفية")}window.__review=(g("gm_review",1)!==0);var rb=btn(lab(),function(b){window.__review=!(window.__review!==false);w("gm_review",window.__review?1:0);b.textContent=lab()},"");ch.appendChild(rb)})();
+(function(){function lab(){return"👁 معاينة قبل التنفيذ: "+(window.__prev!==false?"شغّالة":"مطفية")}window.__prev=(g("gm_prev",1)!==0);var pb=btn(lab(),function(b){window.__prev=!(window.__prev!==false);w("gm_prev",window.__prev?1:0);b.textContent=lab()},"");ch.appendChild(pb)})();
 function fx(p){if(p.dataset.f)return;p.dataset.f=1;var t=p.textContent;if(t.indexOf("```")<0)return;p.textContent="";var re=/```[\w-]*\n?([\s\S]*?)```/g,i=0,m;
-while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));(function(cc){d.appendChild(btn("▶ نفّذ باللعبة",function(e){runMc(cc,e)}))})(c);p.appendChild(d);i=re.lastIndex}
-if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
+while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var c=m[1].trim(),d=el("div","cb",c);d.dataset.code=c;d.appendChild(document.createElement("br"));d.appendChild(btn("نسخ الكود",function(e){oc(c,e,"نسخ الكود")}));(function(cc){d.appendChild(btn("▶ نفّذ باللعبة",function(e){runMc(cc,e)}))})(c);p.appendChild(d);i=re.lastIndex}
+if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)));pvBtn(p)}
 new MutationObserver(function(){Array.prototype.forEach.call(document.querySelectorAll("#gmsgs .gb.m > div:first-child"),fx)}).observe($("gmsgs"),{childList:true,subtree:true})}
 })();
 </script>
